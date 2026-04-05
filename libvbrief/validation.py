@@ -1,4 +1,4 @@
-"""Core conformance validation for vBRIEF v0.5 JSON documents."""
+"""Core conformance validation for vBRIEF v0.5 and v0.6 JSON documents."""
 
 from __future__ import annotations
 
@@ -24,6 +24,8 @@ from libvbrief.compat import (
     VALID_STATUSES,
 )
 from libvbrief.issues import ValidationReport
+
+SUPPORTED_VERSIONS: frozenset[str] = frozenset({"0.5", "0.6"})
 
 
 def validate_document(document: Any, *, dag: bool = False) -> ValidationReport:
@@ -73,11 +75,11 @@ def _validate_root(data: Mapping[str, Any], report: ValidationReport) -> None:
 
     if vbrief_info is not None:
         version = vbrief_info.get("version")
-        if version != "0.5":
+        if version not in SUPPORTED_VERSIONS:
             report.add_error(
                 ISSUE_INVALID_VERSION,
                 "vBRIEFInfo.version",
-                f"Expected version '0.5', got {version!r}",
+                f"Expected one of {sorted(SUPPORTED_VERSIONS)}, got {version!r}",
             )
 
     if "plan" not in data:
@@ -196,18 +198,20 @@ def _validate_items(
                 "planRef must match #..., file://..., or https://...",
             )
 
-        sub_items = item.get("subItems")
-        if sub_items is None:
+        # Accept both v0.6 'items' and legacy 'subItems'; prefer 'items' if present.
+        nested_key = "items" if "items" in item else "subItems"
+        nested = item.get(nested_key)
+        if nested is None:
             continue
-        if not isinstance(sub_items, list):
+        if not isinstance(nested, list):
             report.add_error(
                 ISSUE_INVALID_SUBITEMS_TYPE,
-                f"{item_path}.subItems",
-                "subItems must be an array",
+                f"{item_path}.{nested_key}",
+                f"{nested_key} must be an array",
             )
             continue
 
-        _validate_items(sub_items, report, f"{item_path}.subItems", seen_ids=seen_ids)
+        _validate_items(nested, report, f"{item_path}.{nested_key}", seen_ids=seen_ids)
 
 
 def _to_dict(document: Any) -> Any:

@@ -1,13 +1,13 @@
-# libvbrief-ts Project Guidelines
+# libvbrief Project Guidelines
 
 Only specify items here that **override or extend** the deft defaults.
 See `deft/main.md`, `deft/coding/coding.md`, and language-specific files for base standards.
 
-**⚠️ See also**: [../main.md](../main.md) | [../languages/typescript.md](../languages/typescript.md)
+**⚠️ See also**: [../main.md](../main.md) | [../languages/python.md](../languages/python.md)
 
 ## Project Configuration
 
-**Tech Stack**: Library using TypeScript
+**Tech Stack**: Library using Python
 
 ## Strategy
 

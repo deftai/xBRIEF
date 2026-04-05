@@ -69,7 +69,7 @@ def test_slugify_idempotent() -> None:
 
 def test_plan_item_factories_always_produce_valid_status() -> None:
     factories = [PlanItem.pending, PlanItem.running, PlanItem.completed,
-                 PlanItem.blocked, PlanItem.cancelled, PlanItem.draft]
+                 PlanItem.blocked, PlanItem.failed, PlanItem.cancelled, PlanItem.draft]
     for _ in range(_ITERATIONS):
         factory = _RNG.choice(factories)
         title = _random_string(0, 50)
