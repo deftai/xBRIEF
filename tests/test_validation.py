@@ -141,6 +141,75 @@ def test_validate_subitems_not_list_reports_error() -> None:
     assert any(i.code == "invalid_subitems_type" for i in report.errors)
 
 
+def test_validate_v06_document_is_valid() -> None:
+    """A well-formed v0.6 document must pass validation."""
+    doc = {
+        "vBRIEFInfo": {"version": "0.6"},
+        "plan": {
+            "title": "v0.6 Plan",
+            "status": "running",
+            "items": [{"title": "Task", "status": "pending"}],
+        },
+    }
+
+    report = validate(doc)
+
+    assert report.is_valid
+    assert report.errors == []
+
+
+def test_validate_failed_status_is_valid() -> None:
+    """Items and plans with status 'failed' must pass validation."""
+    doc = {
+        "vBRIEFInfo": {"version": "0.6"},
+        "plan": {
+            "title": "Failed Plan",
+            "status": "failed",
+            "items": [{"title": "Task", "status": "failed"}],
+        },
+    }
+
+    report = validate(doc)
+
+    assert report.is_valid
+    assert report.errors == []
+
+
+def test_validate_items_key_on_planitem_is_traversed() -> None:
+    """Nested children under the v0.6 'items' key must be validated."""
+    doc = {
+        "vBRIEFInfo": {"version": "0.6"},
+        "plan": {
+            "title": "Plan",
+            "status": "running",
+            "items": [
+                {
+                    "title": "Parent",
+                    "status": "pending",
+                    "items": [{"title": "Child", "status": "bad-status"}],
+                }
+            ],
+        },
+    }
+
+    report = validate(doc)
+
+    paths = {issue.path for issue in report.errors}
+    assert "plan.items[0].items[0].status" in paths
+
+
+def test_validate_report_for_unsupported_version() -> None:
+    """An unrecognised version string must produce invalid_version."""
+    doc = {
+        "vBRIEFInfo": {"version": "0.4"},
+        "plan": {"title": "T", "status": "running", "items": []},
+    }
+
+    report = validate(doc)
+
+    assert any(i.code == "invalid_version" for i in report.errors)
+
+
 def test_validation_report_add_warning_and_extend() -> None:
     report = ValidationReport()
     report.add_warning("some_code", "some.path", "a warning")

@@ -1,4 +1,4 @@
-"""Dataclass object model for vBRIEF v0.5 documents."""
+"""Dataclass object model for vBRIEF v0.5 and v0.6 documents."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ _PLAN_ITEM_FIELD_ORDER = [
     "title",
     "status",
     "narrative",
+    "items",
     "subItems",
     "planRef",
     "tags",
@@ -170,11 +171,12 @@ class PlanItem:
             _field_order=list(data.keys()),
         )
 
-        sub_items = data.get("subItems")
-        if isinstance(sub_items, list):
-            # Non-Mapping entries are intentionally skipped (lenient parse);
-            # validation will flag them via ISSUE_INVALID_ITEM_TYPE.
-            item.subItems = [cls.from_dict(x) for x in sub_items if isinstance(x, Mapping)]
+        # Prefer v0.6 'items' key; fall back to legacy 'subItems'.
+        # Non-Mapping entries are intentionally skipped (lenient parse);
+        # validation will flag them via ISSUE_INVALID_ITEM_TYPE.
+        nested_raw = data.get("items") if "items" in data else data.get("subItems")
+        if isinstance(nested_raw, list):
+            item.subItems = [cls.from_dict(x) for x in nested_raw if isinstance(x, Mapping)]
         return item
 
 
@@ -377,7 +379,8 @@ def _known_item_values(item: PlanItem, *, preserve_order: bool) -> dict[str, Any
         "id": item.id,
         "uid": item.uid,
         "narrative": item.narrative,
-        "subItems": [sub.to_dict(preserve_order=preserve_order) for sub in item.subItems]
+        # Always emit 'items' (v0.6 preferred key); 'subItems' is accepted on read for compat.
+        "items": [sub.to_dict(preserve_order=preserve_order) for sub in item.subItems]
         if item.subItems
         else None,
         "planRef": item.planRef,
@@ -497,5 +500,6 @@ PlanItem.pending = _StatusFactory("pending")
 PlanItem.running = _StatusFactory("running")
 PlanItem.completed = _StatusFactory("completed")
 PlanItem.blocked = _StatusFactory("blocked")
+PlanItem.failed = _StatusFactory("failed")
 PlanItem.cancelled = _StatusFactory("cancelled")
 PlanItem.draft = _StatusFactory("draft")

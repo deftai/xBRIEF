@@ -135,6 +135,80 @@ def test_plan_item_from_dict_with_sub_items() -> None:
     assert item.subItems[0].title == "Child"
 
 
+def test_plan_item_from_dict_prefers_items_key_over_sub_items() -> None:
+    """v0.6 'items' key takes precedence over legacy 'subItems' when both present."""
+    from libvbrief.models import PlanItem
+
+    data = {
+        "title": "Parent",
+        "status": "pending",
+        "items": [{"title": "v0.6 child", "status": "running"}],
+        "subItems": [{"title": "legacy child", "status": "pending"}],
+    }
+
+    item = PlanItem.from_dict(data)
+
+    assert len(item.subItems) == 1
+    assert item.subItems[0].title == "v0.6 child"
+
+
+def test_plan_item_from_dict_reads_items_key_for_nested_children() -> None:
+    """A v0.6 document using 'items' for nested children must parse them correctly."""
+    from libvbrief.models import PlanItem
+
+    data = {
+        "title": "Parent",
+        "status": "pending",
+        "items": [{"title": "Child", "status": "running"}],
+    }
+
+    item = PlanItem.from_dict(data)
+
+    assert len(item.subItems) == 1
+    assert item.subItems[0].title == "Child"
+
+
+def test_plan_item_failed_factory() -> None:
+    """PlanItem.failed(...) must produce a PlanItem with status 'failed'."""
+    from libvbrief.models import PlanItem
+
+    item = PlanItem.failed("Deploy failed")
+
+    assert item.title == "Deploy failed"
+    assert item.status == "failed"
+
+
+def test_builder_produces_v06_version_string() -> None:
+    """PlanBuilder.to_document(), quick_todo(), and from_items() must emit version '0.6'."""
+    from libvbrief.builder import PlanBuilder, from_items, quick_todo
+    from libvbrief.models import PlanItem
+
+    via_builder = PlanBuilder("P", status="draft").to_document()
+    assert via_builder.vbrief_info["version"] == "0.6"
+
+    via_quick_todo = quick_todo("T", ["item one"])
+    assert via_quick_todo.vbrief_info["version"] == "0.6"
+
+    via_from_items = from_items("T", [PlanItem(title="x", status="pending")])
+    assert via_from_items.vbrief_info["version"] == "0.6"
+
+
+def test_nested_items_serialized_as_items_key() -> None:
+    """Round-trip: nested children are emitted under 'items' key, not 'subItems'."""
+    from libvbrief.builder import PlanBuilder
+
+    builder = PlanBuilder("Plan", status="running")
+    parent = builder.add_item("Parent", id="p", status="pending")
+    parent.add_subitem("Child", status="pending")
+
+    rendered = builder.to_document().to_dict()
+    parent_item = rendered["plan"]["items"][0]
+
+    assert "items" in parent_item
+    assert parent_item["items"][0]["title"] == "Child"
+    assert "subItems" not in parent_item
+
+
 def test_plan_with_optional_fields_round_trips() -> None:
     doc = {
         "vBRIEFInfo": {"version": "0.5"},

@@ -205,7 +205,7 @@ def test_e2e_quick_todo_file_roundtrip(tmp_path: Path) -> None:
 
     # Verify file is valid JSON
     raw = json.loads(path.read_text(encoding="utf-8"))
-    assert raw["vBRIEFInfo"]["version"] == "0.5"
+    assert raw["vBRIEFInfo"]["version"] == "0.6"
     assert raw["plan"]["title"] == "Shopping"
     assert len(raw["plan"]["items"]) == 3
 

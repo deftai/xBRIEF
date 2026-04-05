@@ -13,6 +13,7 @@ VALID_STATUSES: Final[set[str]] = {
     "running",
     "completed",
     "blocked",
+    "failed",
     "cancelled",
 }
 
