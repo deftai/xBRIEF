@@ -51,9 +51,6 @@
         "metadata": {
           "type": "object"
         },
-        "architecture": {
-          "$ref": "#/$defs/Architecture"
-        },
         "created": {
           "$ref": "#/$defs/dateTime"
         },
@@ -167,6 +164,9 @@
         },
         "metadata": {
           "type": "object"
+        },
+        "architecture": {
+          "$ref": "#/$defs/Architecture"
         },
         "created": {
           "$ref": "#/$defs/dateTime"
@@ -375,6 +375,7 @@
       "properties": {
         "stateSurfaces": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "$ref": "#/$defs/StateSurface"
           }

@@ -154,7 +154,7 @@ The `architecture` field is an OPTIONAL object for design records that apply to 
 
 #### 3.4.1 System of Record
 
-The `architecture.systemOfRecord` field declares the authoritative owner for stateful behavior introduced or modified by the plan. When present, it MUST contain a `stateSurfaces` array. Each state surface SHOULD include a human-readable `name`, a `classification`, and enough ownership and storage detail for implementation agents or gates to determine whether the declared system of record is appropriate.
+The `architecture.systemOfRecord` field declares the authoritative owner for stateful behavior introduced or modified by the plan. When present, it MUST contain a non-empty `stateSurfaces` array. Each state surface SHOULD include a human-readable `name`, a `classification`, and enough ownership and storage detail for implementation agents or gates to determine whether the declared system of record is appropriate.
 
 Recognized `classification` values are:
 

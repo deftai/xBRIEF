@@ -232,7 +232,7 @@ export const ReferenceApplicationSchema: z.ZodType<ReferenceApplicationData> = z
 
 export const SystemOfRecordSchema: z.ZodType<SystemOfRecordData> = z
   .object({
-    stateSurfaces: z.array(StateSurfaceSchema),
+    stateSurfaces: z.array(StateSurfaceSchema).min(1),
     referenceApplications: z.array(ReferenceApplicationSchema).optional(),
   })
   .passthrough();

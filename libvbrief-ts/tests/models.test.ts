@@ -1,6 +1,13 @@
 import { describe, expect, test } from "vitest";
 
-import { Plan, PlanItem, StateSurfaceSchema, VBriefDocument } from "../src/index.js";
+import {
+  ArchitectureSchema,
+  Plan,
+  PlanItem,
+  StateSurfaceSchema,
+  SystemOfRecordSchema,
+  VBriefDocument,
+} from "../src/index.js";
 
 describe("models", () => {
   test("preserves unknown fields and ordering when round-tripping a document", () => {
@@ -116,7 +123,35 @@ describe("models", () => {
     });
   });
 
-  test("validates system-of-record state surface classification", () => {
+  test("validates architecture system-of-record schemas", () => {
+    expect(
+      ArchitectureSchema.parse({
+        systemOfRecord: {
+          stateSurfaces: [
+            {
+              name: "Workspace",
+              classification: "durable_product_state",
+            },
+          ],
+        },
+      }),
+    ).toEqual({
+      systemOfRecord: {
+        stateSurfaces: [
+          {
+            name: "Workspace",
+            classification: "durable_product_state",
+          },
+        ],
+      },
+    });
+
+    expect(() =>
+      SystemOfRecordSchema.parse({
+        stateSurfaces: [],
+      }),
+    ).toThrow();
+
     expect(
       StateSurfaceSchema.parse({
         name: "Workspace",
