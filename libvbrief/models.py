@@ -51,6 +51,7 @@ _PLAN_FIELD_ORDER = [
     "edges",
     "tags",
     "metadata",
+    "architecture",
     "created",
     "updated",
     "author",
@@ -212,6 +213,7 @@ class Plan:
     edges: Any = None
     tags: Any = None
     metadata: Any = None
+    architecture: Any = None
     created: Any = None
     updated: Any = None
     author: Any = None
@@ -243,6 +245,7 @@ class Plan:
             edges=data.get("edges"),
             tags=data.get("tags"),
             metadata=data.get("metadata"),
+            architecture=data.get("architecture"),
             created=data.get("created"),
             updated=data.get("updated"),
             author=data.get("author"),
@@ -422,6 +425,7 @@ def _known_plan_values(plan: Plan, *, preserve_order: bool) -> dict[str, Any]:
         "edges": plan.edges,
         "tags": plan.tags,
         "metadata": plan.metadata,
+        "architecture": plan.architecture,
         "created": plan.created,
         "updated": plan.updated,
         "author": plan.author,
