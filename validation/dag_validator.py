@@ -1,5 +1,5 @@
 """
-vBRIEF v0.5 DAG Validator
+xBRIEF v0.5 DAG Validator
 
 Validates directed acyclic graph (DAG) constraints for Plan edges:
 - Detects cycles using DFS-based algorithm (O(V+E) complexity)
@@ -17,7 +17,7 @@ class ValidationError(Exception):
 
 
 class EdgeType(str, Enum):
-    """Core edge types defined in vBRIEF v0.5 specification."""
+    """Core edge types defined in xBRIEF v0.5 specification."""
     BLOCKS = "blocks"
     INFORMS = "informs"
     INVALIDATES = "invalidates"
@@ -25,7 +25,7 @@ class EdgeType(str, Enum):
 
 
 class DAGValidator:
-    """Validates DAG constraints for vBRIEF Plans."""
+    """Validates DAG constraints for xBRIEF Plans."""
     
     def __init__(self, items: List[Dict], edges: List[Dict]):
         """
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python dag_validator.py <plan.vbrief.json>")
+        print("Usage: python dag_validator.py <plan.xbrief.json>")
         sys.exit(1)
     
     with open(sys.argv[1], 'r') as f:

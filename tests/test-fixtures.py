@@ -1,7 +1,7 @@
 """
-Fixture-based integration tests for libvbrief.
+Fixture-based integration tests for libxbrief.
 
-Each test loads a real .vbrief.json file from examples/ and exercises the
+Each test loads a real .xbrief.json file from examples/ and exercises the
 dict API, class API, validation, and round-trip behaviour against it.
 """
 
@@ -10,16 +10,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from libvbrief import VBriefDocument, dump_file, load_file, loads, validate
+from libxbrief import XBriefDocument, dump_file, load_file, loads, validate
 
 
 # ---------------------------------------------------------------------------
-# minimal-plan.vbrief.json — simplest valid v0.5 document
+# minimal-plan.xbrief.json — simplest valid v0.5 document
 # ---------------------------------------------------------------------------
 
 
 def test_minimal_plan_is_valid(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "minimal-plan.vbrief.json")
+    doc = load_file(examples_dir / "minimal-plan.xbrief.json")
 
     report = validate(doc)
 
@@ -27,8 +27,8 @@ def test_minimal_plan_is_valid(examples_dir: Path) -> None:
 
 
 def test_minimal_plan_model_round_trip(examples_dir: Path) -> None:
-    path = examples_dir / "minimal-plan.vbrief.json"
-    model = VBriefDocument.from_file(path)
+    path = examples_dir / "minimal-plan.xbrief.json"
+    model = XBriefDocument.from_file(path)
 
     assert model.plan.title == "Daily Tasks"
     assert model.plan.status == "running"
@@ -40,7 +40,7 @@ def test_minimal_plan_model_round_trip(examples_dir: Path) -> None:
 
 
 def test_minimal_plan_canonical_output_is_deterministic(examples_dir: Path, tmp_path: Path) -> None:
-    model = VBriefDocument.from_file(examples_dir / "minimal-plan.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "minimal-plan.xbrief.json")
 
     out1 = model.to_json(canonical=True)
     out2 = model.to_json(canonical=True)
@@ -53,12 +53,12 @@ def test_minimal_plan_canonical_output_is_deterministic(examples_dir: Path, tmp_
 
 
 # ---------------------------------------------------------------------------
-# dag-plan.vbrief.json — optional plan fields: id, edges, narratives, tags
+# dag-plan.xbrief.json — optional plan fields: id, edges, narratives, tags
 # ---------------------------------------------------------------------------
 
 
 def test_dag_plan_is_valid(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "dag-plan.vbrief.json")
+    doc = load_file(examples_dir / "dag-plan.xbrief.json")
 
     report = validate(doc)
 
@@ -66,7 +66,7 @@ def test_dag_plan_is_valid(examples_dir: Path) -> None:
 
 
 def test_dag_plan_optional_fields_preserved(examples_dir: Path) -> None:
-    model = VBriefDocument.from_file(examples_dir / "dag-plan.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "dag-plan.xbrief.json")
 
     assert model.plan.id == "build-pipeline"
     assert model.plan.tags == ["cicd", "pipeline", "automation"]
@@ -78,7 +78,7 @@ def test_dag_plan_optional_fields_preserved(examples_dir: Path) -> None:
 
 
 def test_dag_plan_item_ids_validated(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "dag-plan.vbrief.json")
+    doc = load_file(examples_dir / "dag-plan.xbrief.json")
 
     report = validate(doc)
 
@@ -88,12 +88,12 @@ def test_dag_plan_item_ids_validated(examples_dir: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# structured-plan.vbrief.json — item-level priority, proposed status
+# structured-plan.xbrief.json — item-level priority, proposed status
 # ---------------------------------------------------------------------------
 
 
 def test_structured_plan_is_valid(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "structured-plan.vbrief.json")
+    doc = load_file(examples_dir / "structured-plan.xbrief.json")
 
     report = validate(doc)
 
@@ -101,7 +101,7 @@ def test_structured_plan_is_valid(examples_dir: Path) -> None:
 
 
 def test_structured_plan_item_optional_fields_round_trip(examples_dir: Path) -> None:
-    model = VBriefDocument.from_file(examples_dir / "structured-plan.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "structured-plan.xbrief.json")
 
     assert model.plan.status == "proposed"
     priorities = [item.priority for item in model.plan.items if item.priority is not None]
@@ -112,12 +112,12 @@ def test_structured_plan_item_optional_fields_round_trip(examples_dir: Path) -> 
 
 
 # ---------------------------------------------------------------------------
-# retrospective-plan.vbrief.json — item narrative, completed timestamps
+# retrospective-plan.xbrief.json — item narrative, completed timestamps
 # ---------------------------------------------------------------------------
 
 
 def test_retrospective_plan_is_valid(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "retrospective-plan.vbrief.json")
+    doc = load_file(examples_dir / "retrospective-plan.xbrief.json")
 
     report = validate(doc)
 
@@ -125,7 +125,7 @@ def test_retrospective_plan_is_valid(examples_dir: Path) -> None:
 
 
 def test_retrospective_plan_item_narrative_and_completed_preserved(examples_dir: Path) -> None:
-    model = VBriefDocument.from_file(examples_dir / "retrospective-plan.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "retrospective-plan.xbrief.json")
 
     first = model.plan.items[0]
     assert first.completed is not None
@@ -137,12 +137,12 @@ def test_retrospective_plan_item_narrative_and_completed_preserved(examples_dir:
 
 
 # ---------------------------------------------------------------------------
-# prd.vbrief.json — unknown fields (kind, type) must be preserved
+# prd.xbrief.json — unknown fields (kind, type) must be preserved
 # ---------------------------------------------------------------------------
 
 
 def test_prd_plan_is_valid(examples_dir: Path) -> None:
-    doc = load_file(examples_dir / "prd.vbrief.json")
+    doc = load_file(examples_dir / "prd.xbrief.json")
 
     report = validate(doc)
 
@@ -151,11 +151,11 @@ def test_prd_plan_is_valid(examples_dir: Path) -> None:
 
 def test_prd_plan_unknown_fields_preserved_dict_api(examples_dir: Path) -> None:
     """plan.type and item.kind are unknown fields and must survive round-trip."""
-    path = examples_dir / "prd.vbrief.json"
+    path = examples_dir / "prd.xbrief.json"
     original = load_file(path)
 
     # dict round-trip via file
-    out_path = path.parent.parent / ".vbrief" / "_test_prd_roundtrip.json"
+    out_path = path.parent.parent / ".xbrief" / "_test_prd_roundtrip.json"
     try:
         dump_file(original, out_path)
         reloaded = load_file(out_path)
@@ -167,7 +167,7 @@ def test_prd_plan_unknown_fields_preserved_dict_api(examples_dir: Path) -> None:
 
 def test_prd_plan_unknown_fields_preserved_class_api(examples_dir: Path) -> None:
     """Model round-trip must not drop plan.type or item.kind."""
-    model = VBriefDocument.from_file(examples_dir / "prd.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "prd.xbrief.json")
 
     assert model.plan.extras.get("type") == "prd"
     assert model.plan.items[0].extras.get("kind") == "requirement"
@@ -178,19 +178,19 @@ def test_prd_plan_unknown_fields_preserved_class_api(examples_dir: Path) -> None
 
 
 def test_prd_plan_item_count(examples_dir: Path) -> None:
-    model = VBriefDocument.from_file(examples_dir / "prd.vbrief.json")
+    model = XBriefDocument.from_file(examples_dir / "prd.xbrief.json")
 
     assert len(model.plan.items) == 62
 
 
 # ---------------------------------------------------------------------------
-# invalid-cycle.vbrief.json — structurally valid; cycle is DAG-level (out of scope v1)
+# invalid-cycle.xbrief.json — structurally valid; cycle is DAG-level (out of scope v1)
 # ---------------------------------------------------------------------------
 
 
 def test_invalid_cycle_is_structurally_valid(examples_dir: Path) -> None:
-    """DAG cycle detection is out of scope in v1; document must pass libvbrief validation."""
-    doc = load_file(examples_dir / "invalid-cycle.vbrief.json")
+    """DAG cycle detection is out of scope in v1; document must pass libxbrief validation."""
+    doc = load_file(examples_dir / "invalid-cycle.xbrief.json")
 
     report = validate(doc)
 
@@ -198,12 +198,12 @@ def test_invalid_cycle_is_structurally_valid(examples_dir: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# warp.vbrief.json — v0.4 legacy format; must fail validation
+# warp.xbrief.json — v0.4 legacy format; must fail validation
 # ---------------------------------------------------------------------------
 
 
-def test_warp_vbrief_fails_validation_wrong_version(repo_root: Path) -> None:
-    doc = load_file(repo_root / "warp.vbrief.json")
+def test_warp_xbrief_fails_validation_wrong_version(repo_root: Path) -> None:
+    doc = load_file(repo_root / "warp.xbrief.json")
 
     report = validate(doc)
 
@@ -212,8 +212,8 @@ def test_warp_vbrief_fails_validation_wrong_version(repo_root: Path) -> None:
     assert "invalid_version" in codes
 
 
-def test_warp_vbrief_fails_validation_missing_plan(repo_root: Path) -> None:
-    doc = load_file(repo_root / "warp.vbrief.json")
+def test_warp_xbrief_fails_validation_missing_plan(repo_root: Path) -> None:
+    doc = load_file(repo_root / "warp.xbrief.json")
 
     report = validate(doc)
 
@@ -221,9 +221,9 @@ def test_warp_vbrief_fails_validation_missing_plan(repo_root: Path) -> None:
     assert "plan" in paths
 
 
-def test_warp_vbrief_loads_leniently(repo_root: Path) -> None:
+def test_warp_xbrief_loads_leniently(repo_root: Path) -> None:
     """Lenient mode must load without raising even for invalid docs."""
-    doc = loads((repo_root / "warp.vbrief.json").read_text(encoding="utf-8"))
+    doc = loads((repo_root / "warp.xbrief.json").read_text(encoding="utf-8"))
 
-    assert doc["vBRIEFInfo"]["version"] == "0.4"
+    assert doc["xBRIEFInfo"]["version"] == "0.4"
     assert "playbook" in doc

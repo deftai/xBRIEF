@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "libvbrief"
-version = "0.2.0"
-description = "Python library for reading, writing, and validating vBRIEF v0.5 JSON files"
+name = "libxbrief"
+version = "0.7.0"
+description = "Python library for reading, writing, and validating xBRIEF v0.7 JSON files"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -27,7 +27,7 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["libvbrief", "libvbrief.serialization", "libvbrief.compat"]
+packages = ["libxbrief", "libxbrief.serialization", "libxbrief.compat"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
