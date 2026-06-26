@@ -31,9 +31,9 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: api/go/go.mod
+          go-version-file: history/api/go/go.mod
           cache: true
-          cache-dependency-path: api/go/go.sum
+          cache-dependency-path: history/api/go/go.sum
 
       - name: Run checks (with coverage gate)
         run: task quality
