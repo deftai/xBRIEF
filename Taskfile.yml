@@ -23,6 +23,16 @@ tasks:
     cmds:
       - uv run --with ruff ruff check .
 
+  quality:
+    desc: Run all quality checks (lint, typecheck, tests, validate)
+    deps:
+      - lint
+      - ts:typecheck
+      - ts:lint
+      - python:coverage
+      - ts:coverage
+      - validate
+
   validate:
     desc: Validate all example documents
     cmds:

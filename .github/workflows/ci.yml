@@ -31,9 +31,23 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: api/go/go.mod
+          go-version-file: history/api/go/go.mod
           cache: true
-          cache-dependency-path: api/go/go.sum
+          cache-dependency-path: history/api/go/go.sum
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: libxbrief-ts/package-lock.json
+
+      - name: Install TypeScript dependencies
+        run: npm ci
+        working-directory: libxbrief-ts
 
       - name: Run checks (with coverage gate)
         run: task quality
