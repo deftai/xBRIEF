@@ -5,7 +5,7 @@ from libxbrief import validate
 
 def test_validation_paths_are_specific_for_nested_items() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "Nested",
             "status": "running",

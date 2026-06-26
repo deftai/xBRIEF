@@ -9,7 +9,7 @@ from libxbrief import ValidationError, XBriefDocument, validate
 
 def test_model_from_dict_and_to_dict_preserves_unknown_fields() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7", "x-info": "value"},
+        "xBRIEFInfo": {"version": "0.8", "x-info": "value"},
         "plan": {
             "title": "Plan",
             "status": "running",
@@ -37,7 +37,7 @@ def test_model_from_dict_and_to_dict_preserves_unknown_fields() -> None:
 def test_model_validation_returns_report() -> None:
     model = XBriefDocument.from_dict(
         {
-            "xBRIEFInfo": {"version": "0.7"},
+            "xBRIEFInfo": {"version": "0.8"},
             "plan": {"title": "P", "status": "running", "items": [{"title": "x", "status": "pending"}]},
         }
     )
@@ -50,7 +50,7 @@ def test_model_validation_returns_report() -> None:
 
 def test_model_preserve_order_uses_original_field_order() -> None:
     source = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "P",
             "status": "running",
@@ -69,7 +69,7 @@ def test_model_preserve_order_uses_original_field_order() -> None:
 def test_model_xbrief_info_extras_round_trip() -> None:
     """Unknown keys inside xBRIEFInfo must survive to_dict() and to_json()."""
     doc = {
-        "xBRIEFInfo": {"version": "0.7", "x-generator": "myapp", "x-schema": "v1"},
+        "xBRIEFInfo": {"version": "0.8", "x-generator": "myapp", "x-schema": "v1"},
         "plan": {"title": "P", "status": "running", "items": []},
     }
 
@@ -92,7 +92,7 @@ def test_model_from_dict_strict_raises_on_invalid() -> None:
 
 def test_model_from_json_round_trip() -> None:
     text = json.dumps({
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "Q", "status": "draft", "items": []},
     })
 
@@ -104,7 +104,7 @@ def test_model_from_json_round_trip() -> None:
 
 def test_model_from_file_and_to_file_round_trip(tmp_path) -> None:
     source = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "File", "status": "running", "items": [{"title": "T", "status": "pending"}]},
     }
     path = tmp_path / "plan.xbrief.json"
@@ -137,7 +137,7 @@ def test_plan_item_from_dict_with_sub_items() -> None:
 
 def test_plan_with_optional_fields_round_trips() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "id": "proj.2026",
             "title": "Quarterly",
@@ -159,7 +159,7 @@ def test_plan_with_optional_fields_round_trips() -> None:
 def test_merge_values_includes_fields_added_after_parse() -> None:
     """Known fields set after from_dict (not in original _field_order) still appear in preserve-order output."""
     source = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "P", "status": "running", "items": []},
     }
     model = XBriefDocument.from_dict(source)
@@ -216,7 +216,7 @@ def test_xbrief_document_from_dict_non_dict_xbrief_info_becomes_empty() -> None:
 def test_merge_values_extras_added_after_parse_appear_in_preserve_order_output() -> None:
     """Extras added programmatically (not in _field_order) are still emitted (models.py:431)."""
     model = XBriefDocument.from_dict(
-        {"xBRIEFInfo": {"version": "0.7"}, "plan": {"title": "T", "status": "running", "items": []}}
+        {"xBRIEFInfo": {"version": "0.8"}, "plan": {"title": "T", "status": "running", "items": []}}
     )
     model.extras["runtime_key"] = "runtime_value"  # not in _field_order
 

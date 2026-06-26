@@ -61,7 +61,7 @@ function validateRoot(data: Record<string, unknown>, report: ValidationReport): 
 
   if (xbriefInfo !== undefined) {
     const version = xbriefInfo.version;
-    if (version !== "0.7") {
+    if (version !== "0.8") {
       report.addError(
         ISSUE_INVALID_VERSION,
         "xBRIEFInfo.version",

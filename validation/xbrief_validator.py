@@ -68,7 +68,7 @@ class ConformanceValidator:
             return
         
         version = xbrief_info.get("version")
-        if version != "0.7":
+        if version != "0.8":
             self.errors.append(f"Invalid version: expected '0.7', got '{version}'")
     
     def _check_plan_required_fields(self):

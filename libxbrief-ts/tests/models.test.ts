@@ -7,7 +7,7 @@ describe("models", () => {
     const document = XBriefDocument.fromDict({
       before: "root-extra",
       xBRIEFInfo: {
-        version: "0.7",
+        version: "0.8",
         profile: "custom",
       },
       plan: {
@@ -61,7 +61,7 @@ describe("models", () => {
 
   test("constructs plan and document objects directly", () => {
     const document = new XBriefDocument({
-      xbriefInfo: { version: "0.7" },
+      xbriefInfo: { version: "0.8" },
       plan: new Plan({
         title: "Roadmap",
         status: "draft",
@@ -70,7 +70,7 @@ describe("models", () => {
     });
 
     expect(document.toDict()).toEqual({
-      xBRIEFInfo: { version: "0.7" },
+      xBRIEFInfo: { version: "0.8" },
       plan: {
         title: "Roadmap",
         status: "draft",

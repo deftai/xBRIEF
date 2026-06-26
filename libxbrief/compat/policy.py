@@ -13,8 +13,32 @@ VALID_STATUSES: Final[set[str]] = {
     "running",
     "completed",
     "blocked",
+    "failed",
     "cancelled",
+    "auto",
 }
+
+# "auto" is only valid on container PlanItems (group/milestone/epic) with
+# children.  It MUST NOT appear at plan level.
+VALID_PLAN_STATUSES: Final[set[str]] = VALID_STATUSES - {"auto"}
+
+VALID_ITEM_TYPES: Final[set[str]] = {
+    "task",
+    "group",
+    "milestone",
+    "epic",
+}
+
+VALID_VERSIONS: Final[set[str]] = {
+    "0.5",
+    "0.6",
+    "0.7",
+    "0.8",
+}
+
+EXTENSION_PROPERTY_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"^x-[a-z0-9-]+/"
+)
 
 HIERARCHICAL_ID_PATTERN: Final[re.Pattern[str]] = re.compile(
     r"^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*$"
@@ -38,6 +62,9 @@ ISSUE_INVALID_ID_FORMAT: Final[str] = "invalid_id_format"
 ISSUE_DUPLICATE_ITEM_ID: Final[str] = "duplicate_item_id"
 ISSUE_INVALID_PLANREF: Final[str] = "invalid_planref"
 ISSUE_INVALID_SUBITEMS_TYPE: Final[str] = "invalid_subitems_type"
+ISSUE_INVALID_ITEM_TYPE_VALUE: Final[str] = "invalid_item_type_value"
+ISSUE_INVALID_PLANREFS: Final[str] = "invalid_planrefs"
+ISSUE_AUTO_STATUS_INVALID: Final[str] = "auto_status_invalid"
 
 # DAG validation issue codes (used when dag=True is passed to validate)
 ISSUE_INVALID_EDGE_STRUCTURE: Final[str] = "invalid_edge_structure"

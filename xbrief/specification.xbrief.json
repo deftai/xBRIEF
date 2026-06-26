@@ -1,5 +1,5 @@
 {
-  "xBRIEFInfo": { "version": "0.7" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "id": "libxbrief-phase2",
     "title": "libxbrief Phase 2 — Builder & Helpers SPECIFICATION",

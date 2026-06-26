@@ -1,7 +1,7 @@
 import { PlanBuilder, XBriefDocument, loads, validate } from "../src/index.js";
 
 const document = loads(`{
-  "xBRIEFInfo": { "version": "0.7" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "Quick Start",
     "status": "running",

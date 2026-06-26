@@ -51,7 +51,7 @@ describe("validation", () => {
   test("supports DAG validation with cycle detection", () => {
     const report = validate(
       {
-        xBRIEFInfo: { version: "0.7" },
+        xBRIEFInfo: { version: "0.8" },
         plan: {
           title: "Plan",
           status: "running",
