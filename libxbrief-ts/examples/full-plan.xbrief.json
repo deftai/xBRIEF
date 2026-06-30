@@ -50,7 +50,7 @@
           "Outcome": "Package layout, entrypoints, and validation approach were approved."
         },
         "status": "completed",
-        "subItems": [
+        "items": [
           {
             "id": "architecture.universal-entrypoint",
             "status": "completed",
@@ -67,7 +67,7 @@
       {
         "id": "schemas",
         "status": "completed",
-        "subItems": [
+        "items": [
           {
             "id": "schemas.zod",
             "status": "completed",
@@ -84,7 +84,7 @@
       {
         "id": "models",
         "status": "running",
-        "subItems": [
+        "items": [
           {
             "id": "models.plan-item",
             "status": "completed",
@@ -101,7 +101,7 @@
       {
         "id": "validation",
         "status": "running",
-        "subItems": [
+        "items": [
           {
             "id": "validation.structural",
             "status": "completed",
@@ -118,7 +118,7 @@
       {
         "id": "builder-api",
         "status": "running",
-        "subItems": [
+        "items": [
           {
             "id": "builder-api.plan-builder",
             "status": "completed",
@@ -135,7 +135,7 @@
       {
         "id": "docs-examples",
         "status": "pending",
-        "subItems": [
+        "items": [
           {
             "id": "docs-examples.universal-api",
             "status": "pending",
@@ -148,8 +148,7 @@
           },
           {
             "id": "docs-examples.quick-start",
-            "status": "completed",
-            "title": "Add quick start example"
+            "status": "completed"
           },
           {
             "id": "docs-examples.full-plan",
@@ -162,7 +161,7 @@
       {
         "id": "tests",
         "status": "running",
-        "subItems": [
+        "items": [
           {
             "id": "tests.unit",
             "status": "completed",
@@ -182,7 +181,7 @@
           "Goal": "Produce a build artifact and a validated example set for internal adoption."
         },
         "status": "pending",
-        "subItems": [
+        "items": [
           {
             "id": "release.validation",
             "status": "pending",

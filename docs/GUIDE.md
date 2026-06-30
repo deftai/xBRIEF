@@ -13,7 +13,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "Sprint Tasks",
     "status": "running",
@@ -31,7 +31,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "id": "api-migration",
     "title": "API Migration to GraphQL",
@@ -56,7 +56,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "id": "incident-2026-02-02",
     "title": "Database Outage Postmortem",
@@ -92,7 +92,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "id": "ci-pipeline",
     "title": "CI Pipeline",
@@ -118,7 +118,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "RFC: Microservices Architecture",
     "status": "proposed",
@@ -141,7 +141,7 @@ This guide is a cookbook of patterns and recipes for common xBRIEF use cases.
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "v2.0 Release",
     "status": "running",
@@ -200,7 +200,7 @@ For token efficiency in AI workflows, use TRON encoding. A typical plan saves 35
 class Edge: from, to, type
 class PlanItem: id, title, status
 
-xBRIEFInfo: { version: "0.6" }
+xBRIEFInfo: { version: "0.8" }
 plan: {
   title: "Build Pipeline",
   status: "running",

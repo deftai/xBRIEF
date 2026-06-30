@@ -12,7 +12,7 @@ A minimal xBRIEF document has just four fields:
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.5" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "My First Plan",
     "status": "running",
@@ -98,7 +98,7 @@ TypeScript parsing and validation:
 import { loads, validate } from "libxbrief-ts";
 
 const document = loads(`{
-  "xBRIEFInfo": { "version": "0.5" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "Release Checklist",
     "status": "running",

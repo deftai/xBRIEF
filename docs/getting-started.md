@@ -8,7 +8,7 @@ Create a file called `my-plan.xbrief.json`:
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "Weekend Errands",
     "status": "running",
@@ -34,7 +34,7 @@ Narratives let you capture the *why* behind a plan. Add a `narratives` object to
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "API Redesign",
     "status": "proposed",
@@ -76,7 +76,7 @@ When tasks depend on each other, add `edges` to model the workflow:
 
 ```json
 {
-  "xBRIEFInfo": { "version": "0.6" },
+  "xBRIEFInfo": { "version": "0.8" },
   "plan": {
     "title": "Release Pipeline",
     "status": "running",
@@ -115,7 +115,7 @@ TRON reduces token usage by ~35–40%. Convert the pipeline example above:
 class Edge: from, to, type
 class PlanItem: id, title, status
 
-xBRIEFInfo: { version: "0.6" }
+xBRIEFInfo: { version: "0.8" }
 plan: {
   title: "Release Pipeline",
   status: "running",

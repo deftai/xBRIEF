@@ -42,12 +42,16 @@ class DAGValidator:
     
     def _collect_item_ids(self, items: List[Dict], prefix: str = "") -> Set[str]:
         """
-        Recursively collect all item IDs including nested subItems.
-        
+        Recursively collect all item IDs including nested items/subItems.
+
+        In v0.8, nested items (and legacy subItems) typically store their *full* hierarchical
+        id (e.g. "phase.subtask"). We trust the stored "id" value directly rather than
+        rebuilding it from a prefix, while still traversing all children.
+
         Args:
             items: List of PlanItem dictionaries
-            prefix: Hierarchical prefix for nested items
-            
+            prefix: (unused for id construction; kept for compatibility)
+
         Returns:
             Set of all item IDs in the plan
         """
@@ -55,15 +59,15 @@ class DAGValidator:
         for item in items:
             item_id = item.get("id")
             if item_id:
-                # Support hierarchical IDs
-                full_id = f"{prefix}.{item_id}" if prefix else item_id
-                ids.add(full_id)
-                
-                # Recursively process subItems
-                sub_items = item.get("subItems", [])
-                if sub_items:
-                    ids.update(self._collect_item_ids(sub_items, full_id))
-        
+                # Trust the id as declared (already full for hierarchical cases)
+                ids.add(item_id)
+
+                # Recursively process nested items (v0.8 preferred) and legacy subItems
+                for nested_field in ("items", "subItems"):
+                    nested = item.get(nested_field, [])
+                    if nested:
+                        ids.update(self._collect_item_ids(nested, item_id))
+
         return ids
     
     def _build_adjacency_list(self) -> Dict[str, List[str]]:
