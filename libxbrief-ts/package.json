@@ -1,8 +1,8 @@
 {
   "name": "libxbrief-ts",
-  "version": "0.7.0",
+"version": "0.8.0",
   "private": true,
-  "description": "Idiomatic TypeScript port of libxbrief for xBRIEF v0.5 documents",
+"description": "Idiomatic TypeScript port of libxbrief for xBRIEF v0.8 documents",
   "type": "module",
   "exports": {
     ".": {

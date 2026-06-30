@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "libxbrief"
-version = "0.7.0"
-description = "Python library for reading, writing, and validating xBRIEF v0.7 JSON files"
+version = "0.8.0"
+description = "Python library for reading, writing, and validating xBRIEF v0.8 JSON files"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

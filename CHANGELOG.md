@@ -12,6 +12,34 @@ Commit messages follow [Conventional Commits](https://www.conventionalcommits.or
 
 ---
 
+## [0.8.0] — 2026-06-30
+
+### Added
+- **xBRIEF specification v0.8** (`docs/xbrief-spec-0.8.md`).
+- `PlanItem.type` — `task` | `group` | `milestone` | `epic`.
+- `PlanItem.summary` — short human-readable description.
+- `PlanItem.items` (preferred) and `planRefs` — structured nesting and cross-plan references.
+- `status: "auto"` — rollup status allowed only on container items (group/milestone/epic) that have children.
+- Separate plan-level vs item-level status sets (`VALID_PLAN_STATUSES` excludes `"auto"`).
+- Extension property namespace `x-<consumer>/` (e.g. `x-myapp/ticket`); `x-xbrief/*` registry.
+- `Source` and `Confidence` narrative keys for provenance tracking.
+- Versioned schema `schemas/xbrief-core-0.8.schema.json` and updated canonical `schemas/xbrief-core.schema.json`.
+- Full Python (`libxbrief`) and TypeScript (`libxbrief-ts`) model, builder, and validator support for v0.8 shapes.
+- New validation issue codes for item types, planRefs, and invalid auto usage.
+
+### Changed
+- All library and spec versions aligned to **0.8.0** (Python, TypeScript, schemas, examples, docs).
+- Validators now:
+  - Recurse into both `items` (preferred) and `subItems` (compat).
+  - Enforce container-only rule for `auto` (including children via `planRefs`).
+  - Reject `auto` at the plan level.
+- `CURRENT_VERSION = "0.8"`; older documents (0.5–0.7) remain readable; strict validation requires 0.8.
+
+### Fixed
+- Inherited validator gaps from prior spec work (recursion, auto status cross-field checks, plan-level status enforcement, planRefs handling).
+
+---
+
 ## [0.7.0] — 2026-06-26
 
 ### Changed
@@ -63,7 +91,8 @@ Commit messages follow [Conventional Commits](https://www.conventionalcommits.or
 
 ---
 
-[Unreleased]: https://github.com/deftai/xBRIEF/compare/HEAD...HEAD
-[0.7.0]: https://github.com/deftai/xBRIEF/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/deftai/xBRIEF/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/deftai/xBRIEF/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/deftai/xBRIEF/compare/v0.1.0...v0.7.0
 [0.2.0]: https://github.com/deftai/xBRIEF/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/deftai/xBRIEF/releases/tag/v0.1.0

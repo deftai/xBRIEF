@@ -5,7 +5,7 @@ from libxbrief.errors import LibXBriefError, ValidationError
 from libxbrief.io import dump_file, dumps, load_file, loads, validate
 from libxbrief.issues import Issue, ValidationReport
 from libxbrief.models import Plan, PlanItem, XBriefDocument
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 __all__ = [
     "__version__",
