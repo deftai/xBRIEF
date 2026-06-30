@@ -1,5 +1,5 @@
 """
-xBRIEF v0.5 DAG Validator
+xBRIEF v0.8 DAG Validator
 
 Validates directed acyclic graph (DAG) constraints for Plan edges:
 - Detects cycles using DFS-based algorithm (O(V+E) complexity)
@@ -17,7 +17,7 @@ class ValidationError(Exception):
 
 
 class EdgeType(str, Enum):
-    """Core edge types defined in xBRIEF v0.5 specification."""
+    """Core edge types defined in xBRIEF v0.8 specification."""
     BLOCKS = "blocks"
     INFORMS = "informs"
     INVALIDATES = "invalidates"

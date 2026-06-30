@@ -4,7 +4,7 @@
   },
   "plan": {
     "id": "libxbrief-phase2",
-    "title": "libxbrief Phase 2 \u2014 Builder & Helpers SPECIFICATION",
+    "title": "libxbrief Phase 2 — Builder & Helpers SPECIFICATION",
     "status": "completed",
     "author": "interview:2026-03-30",
     "narratives": {
@@ -77,7 +77,7 @@
                 "title": "Implement PlanBuilder class",
                 "status": "completed",
                 "narrative": {
-                  "Acceptance": "Full round-trip: build \u2192 to_document() \u2192 validate(dag=True) returns valid report.",
+                  "Acceptance": "Full round-trip: build → to_document() → validate(dag=True) returns valid report.",
                   "Traces": "FR-1, FR-2, FR-3, FR-4, FR-5, FR-10",
                   "Details": "PlanBuilder(title, *, status='draft', strict=True, **kwargs). Implement add_item(), add_narrative(), add_edges_from() (verifies IDs when strict=True), to_document(), __enter__(), __exit__() (no-op)."
                 }
@@ -108,7 +108,7 @@
             "title": "Subphase 2.1: PlanItem Status Factories",
             "status": "completed",
             "narrative": {
-              "Depends": "none \u2014 independent of Phase 1"
+              "Depends": "none — independent of Phase 1"
             },
             "items": [
               {
@@ -193,7 +193,7 @@
             "title": "Integration tests (tests/test_builder_integration.py)",
             "status": "completed",
             "narrative": {
-              "Acceptance": "Full round-trip PlanBuilder\u2192validate(dag=True)\u2192dumps\u2192loads\u2192from_dict field equality. Builder + direct PlanItem mixed. quick_todo file I/O round-trip.",
+              "Acceptance": "Full round-trip PlanBuilder→validate(dag=True)→dumps→loads→from_dict field equality. Builder + direct PlanItem mixed. quick_todo file I/O round-trip.",
               "Traces": "FR-1, FR-11, FR-12, FR-14"
             }
           },

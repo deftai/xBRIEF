@@ -6,7 +6,7 @@
     "title": "SQLite UI PRD",
     "status": "draft",
     "narratives": {
-      "summary": "Converted from examples/prd.json. Each entry becomes a vSpecItem(kind=requirement). Field mapping: passes\u2192status, steps\u2192narrative[\"Acceptance Criteria\"], and original fields preserved in metadata."
+      "summary": "Converted from examples/prd.json. Each entry becomes a vSpecItem(kind=requirement). Field mapping: passes→status, steps→narrative[\"Acceptance Criteria\"], and original fields preserved in metadata."
     },
     "items": [
       {

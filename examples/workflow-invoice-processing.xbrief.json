@@ -1,5 +1,7 @@
 {
-  "xBRIEFInfo": { "version": "0.8" },
+  "xBRIEFInfo": {
+    "version": "0.8"
+  },
   "plan": {
     "id": "wf:invoice-processing-v4",
     "title": "Invoice Processing with Error Handling",
@@ -9,7 +11,6 @@
       "Proposal": "Automate invoice fetching, classification, and routing based on value.",
       "Background": "Manual invoice processing takes 2 hours/day. High-value invoices require manager approval."
     },
-
     "metadata": {
       "x-workflow/active": true,
       "x-workflow/version": 4,
@@ -29,14 +30,36 @@
       },
       "x-workflow/canvas": {
         "nodes": {
-          "trigger1": { "x": 200, "y": 180 },
-          "http1":    { "x": 480, "y": 180 },
-          "if1":      { "x": 760, "y": 180 },
-          "notify1":  { "x": 1040, "y": 80 },
-          "archive1": { "x": 1040, "y": 280 },
-          "error1":   { "x": 480, "y": 380 }
+          "trigger1": {
+            "x": 200,
+            "y": 180
+          },
+          "http1": {
+            "x": 480,
+            "y": 180
+          },
+          "if1": {
+            "x": 760,
+            "y": 180
+          },
+          "notify1": {
+            "x": 1040,
+            "y": 80
+          },
+          "archive1": {
+            "x": 1040,
+            "y": 280
+          },
+          "error1": {
+            "x": 480,
+            "y": 380
+          }
         },
-        "viewport": { "x": 0, "y": 0, "zoom": 1.0 },
+        "viewport": {
+          "x": 0,
+          "y": 0,
+          "zoom": 1.0
+        },
         "annotations": [
           {
             "id": "note-main",
@@ -48,7 +71,6 @@
         ]
       }
     },
-
     "items": [
       {
         "id": "trigger1",
@@ -61,7 +83,12 @@
           },
           "x-workflow/ports": {
             "in": [],
-            "out": [{ "name": "main", "type": "object" }]
+            "out": [
+              {
+                "name": "main",
+                "type": "object"
+              }
+            ]
           }
         }
       },
@@ -79,10 +106,18 @@
             }
           },
           "x-workflow/ports": {
-            "in": ["main"],
+            "in": [
+              "main"
+            ],
             "out": [
-              { "name": "main", "type": "object" },
-              { "name": "error", "type": "object" }
+              {
+                "name": "main",
+                "type": "object"
+              },
+              {
+                "name": "error",
+                "type": "object"
+              }
             ]
           },
           "x-workflow/retryOnFail": true,
@@ -99,10 +134,20 @@
             "condition": "{{ $json.amount > $vars.highValueThreshold }}"
           },
           "x-workflow/ports": {
-            "in": ["main"],
+            "in": [
+              "main"
+            ],
             "out": [
-              { "name": "true", "type": "object", "description": "Invoices above threshold" },
-              { "name": "false", "type": "object", "description": "Standard invoices" }
+              {
+                "name": "true",
+                "type": "object",
+                "description": "Invoices above threshold"
+              },
+              {
+                "name": "false",
+                "type": "object",
+                "description": "Standard invoices"
+              }
             ]
           }
         }
@@ -123,8 +168,15 @@
             }
           },
           "x-workflow/ports": {
-            "in": ["main"],
-            "out": [{ "name": "main", "type": "object" }]
+            "in": [
+              "main"
+            ],
+            "out": [
+              {
+                "name": "main",
+                "type": "object"
+              }
+            ]
           }
         }
       },
@@ -139,8 +191,15 @@
             "method": "POST"
           },
           "x-workflow/ports": {
-            "in": ["main"],
-            "out": [{ "name": "main", "type": "object" }]
+            "in": [
+              "main"
+            ],
+            "out": [
+              {
+                "name": "main",
+                "type": "object"
+              }
+            ]
           }
         }
       },
@@ -160,13 +219,19 @@
             }
           },
           "x-workflow/ports": {
-            "in": ["main"],
-            "out": [{ "name": "main", "type": "object" }]
+            "in": [
+              "main"
+            ],
+            "out": [
+              {
+                "name": "main",
+                "type": "object"
+              }
+            ]
           }
         }
       }
     ],
-
     "edges": [
       {
         "from": "trigger1",

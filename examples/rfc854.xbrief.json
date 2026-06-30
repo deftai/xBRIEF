@@ -496,7 +496,7 @@
         "status": "completed",
         "priority": "low",
         "narrative": {
-          "Description": "If a party receives what appears to be a request to enter some mode it is already in, the request SHOULD NOT be acknowledged. This non-response is essential to prevent endless loops in the negotiation. It is REQUIRED that a response be sent to requests for a change of mode \u2014 even if the mode is not changed.",
+          "Description": "If a party receives what appears to be a request to enter some mode it is already in, the request SHOULD NOT be acknowledged. This non-response is essential to prevent endless loops in the negotiation. It is REQUIRED that a response be sent to requests for a change of mode — even if the mode is not changed.",
           "Acceptance Criteria": "- No acknowledgment sent if already in requested mode\n- Acknowledgment sent only for mode change requests\n- Prevents negotiation loops"
         },
         "metadata": {

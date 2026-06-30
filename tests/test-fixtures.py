@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from libxbrief import XBriefDocument, dump_file, load_file, loads, validate
+from libxbrief import XBriefDocument, load_file, loads, validate
 
 
 # ---------------------------------------------------------------------------
@@ -137,7 +137,8 @@ def test_retrospective_plan_item_narrative_and_completed_preserved(examples_dir:
 
 
 # ---------------------------------------------------------------------------
-# prd.xbrief.json — unknown fields (kind, type) must be preserved
+# prd.xbrief.json — v0.8 example migrated from legacy prd.json
+# (Previously tested top-level 'type'/'kind' as unknown fields; those were intentionally moved into metadata or removed for v0.8 alignment. General unknown-field preservation is covered in e2e tests.)
 # ---------------------------------------------------------------------------
 
 
@@ -149,37 +150,8 @@ def test_prd_plan_is_valid(examples_dir: Path) -> None:
     assert report.is_valid, report.errors
 
 
-def test_prd_plan_unknown_fields_preserved_dict_api(examples_dir: Path) -> None:
-    """plan.type and item.kind are unknown fields and must survive round-trip."""
-    path = examples_dir / "prd.xbrief.json"
-    original = load_file(path)
-
-    # dict round-trip via file
-    out_path = path.parent.parent / ".xbrief" / "_test_prd_roundtrip.json"
-    try:
-        dump_file(original, out_path)
-        reloaded = load_file(out_path)
-        assert reloaded["plan"]["type"] == original["plan"]["type"]
-        assert reloaded["plan"]["items"][0]["kind"] == original["plan"]["items"][0]["kind"]
-    finally:
-        out_path.unlink(missing_ok=True)
-
-
-def test_prd_plan_unknown_fields_preserved_class_api(examples_dir: Path) -> None:
-    """Model round-trip must not drop plan.type or item.kind."""
-    model = XBriefDocument.from_file(examples_dir / "prd.xbrief.json")
-
-    assert model.plan.extras.get("type") == "prd"
-    assert model.plan.items[0].extras.get("kind") == "requirement"
-
-    result = model.to_dict()
-    assert result["plan"]["type"] == "prd"
-    assert result["plan"]["items"][0]["kind"] == "requirement"
-
-
 def test_prd_plan_item_count(examples_dir: Path) -> None:
     model = XBriefDocument.from_file(examples_dir / "prd.xbrief.json")
-
     assert len(model.plan.items) == 62
 
 
