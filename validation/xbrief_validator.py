@@ -15,6 +15,12 @@ from typing import Dict, List, Tuple
 import re
 
 try:
+    from libxbrief.compat.policy import VALID_STATUSES as _POLICY_VALID_STATUSES
+    _IMPORTED_VALID_STATUSES = _POLICY_VALID_STATUSES
+except ImportError:
+    _IMPORTED_VALID_STATUSES = None
+
+try:
     import jsonschema
     JSONSCHEMA_AVAILABLE = True
 except ImportError:
@@ -28,11 +34,12 @@ from dag_validator import validate_plan_dag
 
 
 class ConformanceValidator:
-    """Validates xBRIEF v0.7 conformance criteria."""
-    
-    VALID_STATUSES = {
-        "draft", "proposed", "approved", "pending", 
-        "running", "completed", "blocked", "cancelled"
+    """Validates xBRIEF v0.8 conformance criteria."""
+
+    # Import shared set from policy; fall back to inline definition if libxbrief not installed.
+    VALID_STATUSES = _IMPORTED_VALID_STATUSES or {
+        "draft", "proposed", "approved", "pending",
+        "running", "completed", "blocked", "failed", "cancelled", "auto",
     }
     
     HIERARCHICAL_ID_PATTERN = re.compile(r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*$')
@@ -61,15 +68,15 @@ class ConformanceValidator:
         return (len(self.errors) == 0, self.errors, self.warnings)
     
     def _check_version(self):
-        """Conformance #1: Contains xBRIEFInfo with version: '0.7'"""
+        """Conformance #1: Contains xBRIEFInfo with version: '0.8'"""
         xbrief_info = self.doc.get("xBRIEFInfo")
         if not xbrief_info:
             self.errors.append("Missing required field: xBRIEFInfo")
             return
-        
+
         version = xbrief_info.get("version")
         if version != "0.8":
-            self.errors.append(f"Invalid version: expected '0.7', got '{version}'")
+            self.errors.append(f"Invalid version: expected '0.8', got '{version}'")
     
     def _check_plan_required_fields(self):
         """Conformance #2-3: Contains exactly one plan with required fields"""
@@ -112,15 +119,16 @@ class ConformanceValidator:
         for i, item in enumerate(items):
             item_path = path + [f"items[{i}]"]
             status = item.get("status")
-            
+
             if status and status not in self.VALID_STATUSES:
                 path_str = ".".join(item_path)
                 self.errors.append(f"Invalid status at {path_str}: '{status}'. Must be one of {self.VALID_STATUSES}")
-            
-            # Check nested items
-            sub_items = item.get("subItems", [])
-            if sub_items:
-                self._check_item_statuses(sub_items, item_path + ["subItems"])
+
+            # Check nested items (preferred v0.8 field) and legacy subItems
+            for nested_field in ("items", "subItems"):
+                nested = item.get(nested_field, [])
+                if nested:
+                    self._check_item_statuses(nested, item_path + [nested_field])
     
     def _check_hierarchical_ids(self):
         """Conformance #6: Hierarchical IDs follow dot notation"""

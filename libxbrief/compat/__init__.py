@@ -1,6 +1,7 @@
 """Compatibility helpers and policy constants."""
 
 from libxbrief.compat.policy import (
+    CURRENT_VERSION,
     EXTENSION_PROPERTY_PATTERN,
     HIERARCHICAL_ID_PATTERN,
     ISSUE_AUTO_STATUS_INVALID,
@@ -31,6 +32,7 @@ from libxbrief.compat.policy import (
 )
 
 __all__ = [
+    "CURRENT_VERSION",
     "EXTENSION_PROPERTY_PATTERN",
     "VALID_STATUSES",
     "VALID_PLAN_STATUSES",

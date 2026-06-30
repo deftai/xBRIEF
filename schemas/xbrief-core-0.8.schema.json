@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xbrief.dev/schemas/xbrief-core-0.7.schema.json",
+  "$id": "https://xbrief.dev/schemas/xbrief-core-0.8.schema.json",
   "title": "xBRIEF Core Schema v0.8",
   "description": "JSON Schema for xBRIEF core document structure (v0.8). Adds PlanItem type (task/group/milestone/epic), summary, planRefs, extension property namespace (x-<consumer>/), Source/Confidence narrative keys, and reference type registry.",
   "type": "object",
@@ -91,7 +91,7 @@
           "minLength": 1
         },
         "status": {
-          "$ref": "#/$defs/Status"
+          "$ref": "#/$defs/PlanStatus"
         },
         "items": {
           "type": "array",
@@ -265,7 +265,7 @@
           "minLength": 1
         },
         "status": {
-          "$ref": "#/$defs/Status"
+          "$ref": "#/$defs/PlanItemStatus"
         },
         "narrative": {
           "type": "object",
@@ -395,7 +395,21 @@
         "^x-[a-z0-9-]+/": {}
       }
     },
-    "Status": {
+    "PlanStatus": {
+      "enum": [
+        "draft",
+        "proposed",
+        "approved",
+        "pending",
+        "running",
+        "completed",
+        "blocked",
+        "failed",
+        "cancelled"
+      ],
+      "description": "Status values valid at plan level. 'auto' is excluded — it is only valid on container PlanItems with children."
+    },
+    "PlanItemStatus": {
       "enum": [
         "draft",
         "proposed",
@@ -408,7 +422,7 @@
         "cancelled",
         "auto"
       ],
-      "description": "Universal status enum. 'auto' is valid only on container items (group, milestone, epic) with children."
+      "description": "Status values valid on PlanItems. 'auto' rolls up from children and is valid only on container items (group/milestone/epic) with children."
     },
     "Edge": {
       "type": "object",
@@ -510,8 +524,8 @@
           "properties": {
             "type": {
               "type": "string",
-              "pattern": "^x-xbrief/",
-              "description": "A xBRIEF reference type. Canonical types: x-xbrief/plan, x-xbrief/github-issue, x-xbrief/github-pr, x-xbrief/commit, x-xbrief/external, x-xbrief/research, x-xbrief/adr. Custom types SHOULD use x-<consumer>/ namespace."
+              "pattern": "^x-[a-zA-Z0-9_-]+/",
+              "description": "A xBRIEF reference type. Canonical types: x-xbrief/plan, x-xbrief/github-issue, x-xbrief/github-pr, x-xbrief/commit, x-xbrief/external, x-xbrief/research, x-xbrief/adr. Custom consumer types SHOULD use x-<consumer>/ namespace (e.g. x-myapp/ticket)."
             }
           }
         }

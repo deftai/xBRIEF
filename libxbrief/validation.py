@@ -182,7 +182,7 @@ def _validate_items(
         # Fix (Greptile #3): reject status="auto" on task-type or childless items
         if status == "auto":
             item_type = item.get("type")
-            child_items = item.get("items") or item.get("subItems")
+            child_items = item.get("items") or item.get("subItems") or item.get("planRefs")
             if item_type == "task" or not child_items:
                 report.add_error(
                     ISSUE_AUTO_STATUS_INVALID,

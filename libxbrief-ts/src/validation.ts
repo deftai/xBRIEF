@@ -1,13 +1,16 @@
 import {
   HIERARCHICAL_ID_PATTERN,
+  ISSUE_AUTO_STATUS_INVALID,
   ISSUE_DUPLICATE_ITEM_ID,
   ISSUE_INVALID_DOCUMENT_TYPE,
   ISSUE_INVALID_ID_FORMAT,
   ISSUE_INVALID_ITEM_STATUS,
   ISSUE_INVALID_ITEM_TYPE,
+  ISSUE_INVALID_ITEM_TYPE_VALUE,
   ISSUE_INVALID_PLAN_FIELD_TYPE,
   ISSUE_INVALID_PLAN_STATUS,
   ISSUE_INVALID_PLANREF,
+  ISSUE_INVALID_PLANREFS,
   ISSUE_INVALID_ROOT_FIELD_TYPE,
   ISSUE_INVALID_SUBITEMS_TYPE,
   ISSUE_INVALID_VERSION,
@@ -15,11 +18,16 @@ import {
   ISSUE_MISSING_PLAN_FIELD,
   ISSUE_MISSING_ROOT_FIELD,
   PLAN_REF_PATTERN,
+  VALID_ITEM_TYPES,
+  VALID_PLAN_STATUSES,
   VALID_STATUSES,
+  VALID_VERSIONS,
 } from "./compat.js";
 import { validatePlanDAG } from "./dag.js";
 import { ValidationReport } from "./issues.js";
 import { isRecordLike } from "./utils.js";
+
+const VALID_ITEM_TYPES_SET = new Set(["task", "group", "milestone", "epic"]);
 
 export interface ValidateOptions {
   dag?: boolean;
@@ -61,11 +69,11 @@ function validateRoot(data: Record<string, unknown>, report: ValidationReport): 
 
   if (xbriefInfo !== undefined) {
     const version = xbriefInfo.version;
-    if (version !== "0.8") {
+    if (!VALID_VERSIONS.has(version as string)) {
       report.addError(
         ISSUE_INVALID_VERSION,
         "xBRIEFInfo.version",
-        `Expected version '0.7', got ${JSON.stringify(version)}`,
+        `Expected version in ${JSON.stringify([...VALID_VERSIONS].sort())}, got ${JSON.stringify(version)}`,
       );
     }
   }
@@ -95,11 +103,12 @@ function validatePlan(plan: Record<string, unknown>, report: ValidationReport): 
   }
 
   const status = plan.status;
-  if (status !== undefined && (typeof status !== "string" || !VALID_STATUSES.has(status))) {
+  // Fix: use VALID_PLAN_STATUSES (excludes "auto") at plan level
+  if (status !== undefined && (typeof status !== "string" || !VALID_PLAN_STATUSES.has(status))) {
     report.addError(
       ISSUE_INVALID_PLAN_STATUS,
       "plan.status",
-      `Invalid plan status ${JSON.stringify(status)}; expected one of ${JSON.stringify([...VALID_STATUSES].sort())}`,
+      `Invalid plan status ${JSON.stringify(status)}; expected one of ${JSON.stringify([...VALID_PLAN_STATUSES].sort())}`,
     );
   }
 
@@ -152,6 +161,21 @@ function validateItems(
       );
     }
 
+    // Fix: reject status="auto" on task-type or childless items
+    if (status === "auto") {
+      const itemType = item.type;
+      const childItems = (item.items as unknown[] | undefined)?.length ||
+        (item.subItems as unknown[] | undefined)?.length ||
+        (item.planRefs as unknown[] | undefined)?.length;
+      if (itemType === "task" || !childItems) {
+        report.addError(
+          ISSUE_AUTO_STATUS_INVALID,
+          `${itemPath}.status`,
+          'status "auto" is only valid on container items (group/milestone/epic) with children',
+        );
+      }
+    }
+
     const itemId = item.id;
     if (itemId !== undefined && (typeof itemId !== "string" || !HIERARCHICAL_ID_PATTERN.test(itemId))) {
       report.addError(ISSUE_INVALID_ID_FORMAT, `${itemPath}.id`, "item id must match hierarchical ID pattern");
@@ -163,6 +187,15 @@ function validateItems(
       }
     }
 
+    const itemType = item.type;
+    if (itemType !== undefined && (typeof itemType !== "string" || !VALID_ITEM_TYPES_SET.has(itemType))) {
+      report.addError(
+        ISSUE_INVALID_ITEM_TYPE_VALUE,
+        `${itemPath}.type`,
+        `Invalid item type ${JSON.stringify(itemType)}; expected one of ${JSON.stringify([...VALID_ITEM_TYPES_SET].sort())}`,
+      );
+    }
+
     const planRef = item.planRef;
     if (planRef !== undefined && (typeof planRef !== "string" || !PLAN_REF_PATTERN.test(planRef))) {
       report.addError(
@@ -170,6 +203,33 @@ function validateItems(
         `${itemPath}.planRef`,
         "planRef must match #..., file://..., or https://...",
       );
+    }
+
+    const planRefs = item.planRefs;
+    if (planRefs !== undefined) {
+      if (!Array.isArray(planRefs)) {
+        report.addError(ISSUE_INVALID_PLANREFS, `${itemPath}.planRefs`, "planRefs must be an array");
+      } else {
+        for (const [idx, ref] of planRefs.entries()) {
+          if (typeof ref !== "string" || !PLAN_REF_PATTERN.test(ref)) {
+            report.addError(
+              ISSUE_INVALID_PLANREFS,
+              `${itemPath}.planRefs[${idx}]`,
+              "planRefs entries must match #..., file://..., or https://...",
+            );
+          }
+        }
+      }
+    }
+
+    // Fix: recurse into both "items" (preferred v0.8) and "subItems" (compat)
+    const nestedItems = item.items;
+    if (nestedItems !== undefined) {
+      if (!Array.isArray(nestedItems)) {
+        report.addError(ISSUE_INVALID_SUBITEMS_TYPE, `${itemPath}.items`, "items must be an array");
+      } else {
+        validateItems(nestedItems, report, `${itemPath}.items`, seenIds);
+      }
     }
 
     const subItems = item.subItems;
@@ -186,7 +246,6 @@ function validateItems(
 }
 
 function toDict(document: unknown): unknown {
-
   if (typeof document === "object" && document !== null) {
     const candidate = document as { toDict?: (options?: { preserveOrder?: boolean }) => unknown };
     if (typeof candidate.toDict === "function") {

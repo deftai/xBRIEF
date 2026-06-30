@@ -29,6 +29,11 @@ VALID_ITEM_TYPES: Final[set[str]] = {
     "epic",
 }
 
+# Current spec version. VALID_VERSIONS is broader for backward-compatible reading
+# (the library can parse older documents). Use CURRENT_VERSION when you need to
+# enforce that a document conforms to the latest spec.
+CURRENT_VERSION: Final[str] = "0.8"
+
 VALID_VERSIONS: Final[set[str]] = {
     "0.5",
     "0.6",
