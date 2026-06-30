@@ -14,7 +14,7 @@ from libxbrief import XBriefDocument, load_file, loads, validate
 
 
 # ---------------------------------------------------------------------------
-# minimal-plan.xbrief.json — simplest valid v0.5 document
+# minimal-plan.xbrief.json — simplest valid v0.8 document
 # ---------------------------------------------------------------------------
 
 

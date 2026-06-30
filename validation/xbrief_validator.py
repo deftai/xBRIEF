@@ -86,11 +86,11 @@ class ConformanceValidator:
         
         plan = self.doc["plan"]
         
-        # Check for removed container types
+        # Check for removed container types (not valid in v0.8+)
         if "todoList" in self.doc:
-            self.errors.append("TodoList container is removed in v0.7. Use Plan instead.")
+            self.errors.append("TodoList container is not supported. Use Plan instead.")
         if "playbook" in self.doc:
-            self.errors.append("Playbook container is removed in v0.7. Use Plan with narratives instead.")
+            self.errors.append("Playbook container is not supported. Use Plan with narratives instead.")
         
         # Required fields
         if "title" not in plan:
