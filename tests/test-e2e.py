@@ -205,7 +205,7 @@ def test_e2e_quick_todo_file_roundtrip(tmp_path: Path) -> None:
 
     # Verify file is valid JSON
     raw = json.loads(path.read_text(encoding="utf-8"))
-    assert raw["xBRIEFInfo"]["version"] == "0.7"
+    assert raw["xBRIEFInfo"]["version"] == "0.8"
     assert raw["plan"]["title"] == "Shopping"
     assert len(raw["plan"]["items"]) == 3
 
@@ -223,7 +223,7 @@ def test_e2e_quick_todo_file_roundtrip(tmp_path: Path) -> None:
 def test_e2e_unknown_fields_survive_full_lifecycle(tmp_path: Path) -> None:
     # Manually create a doc with extension fields
     raw = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "Extended Plan",
             "status": "running",
@@ -270,7 +270,7 @@ def test_e2e_canonical_output_has_sorted_keys() -> None:
 
 def test_e2e_preserve_format_keeps_original_key_order(tmp_path: Path) -> None:
     # Create with specific key order (plan before xBRIEFInfo)
-    raw = '{"plan": {"title": "T", "status": "running", "items": []}, "xBRIEFInfo": {"version": "0.7"}}'
+    raw = '{"plan": {"title": "T", "status": "running", "items": []}, "xBRIEFInfo": {"version": "0.8"}}'
     model = XBriefDocument.from_json(raw)
     preserved = model.to_json(preserve_format=True, canonical=False)
     parsed = json.loads(preserved)
@@ -284,7 +284,7 @@ def test_e2e_preserve_format_keeps_original_key_order(tmp_path: Path) -> None:
 
 
 def test_e2e_from_json_strict_raises_on_invalid() -> None:
-    bad_json = '{"xBRIEFInfo": {"version": "0.7"}, "plan": {"title": "T"}}'
+    bad_json = '{"xBRIEFInfo": {"version": "0.8"}, "plan": {"title": "T"}}'
 
     try:
         XBriefDocument.from_json(bad_json, strict=True)
@@ -296,7 +296,7 @@ def test_e2e_from_json_strict_raises_on_invalid() -> None:
 
 def test_e2e_from_file_strict_dag_validates_fully(tmp_path: Path) -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T",
             "status": "running",

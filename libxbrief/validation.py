@@ -1,4 +1,4 @@
-"""Core conformance validation for xBRIEF v0.7 JSON documents."""
+"""Core conformance validation for xBRIEF v0.8 JSON documents."""
 
 from __future__ import annotations
 
@@ -6,12 +6,15 @@ from typing import Any, Mapping
 
 from libxbrief.compat import (
     HIERARCHICAL_ID_PATTERN,
+    ISSUE_AUTO_STATUS_INVALID,
     ISSUE_DUPLICATE_ITEM_ID,
     ISSUE_INVALID_DOCUMENT_TYPE,
     ISSUE_INVALID_ID_FORMAT,
     ISSUE_INVALID_ITEM_STATUS,
     ISSUE_INVALID_ITEM_TYPE,
+    ISSUE_INVALID_ITEM_TYPE_VALUE,
     ISSUE_INVALID_PLANREF,
+    ISSUE_INVALID_PLANREFS,
     ISSUE_INVALID_PLAN_FIELD_TYPE,
     ISSUE_INVALID_PLAN_STATUS,
     ISSUE_INVALID_ROOT_FIELD_TYPE,
@@ -21,7 +24,10 @@ from libxbrief.compat import (
     ISSUE_MISSING_PLAN_FIELD,
     ISSUE_MISSING_ROOT_FIELD,
     PLAN_REF_PATTERN,
+    VALID_ITEM_TYPES,
+    VALID_PLAN_STATUSES,
     VALID_STATUSES,
+    VALID_VERSIONS,
 )
 from libxbrief.issues import ValidationReport
 
@@ -58,7 +64,7 @@ def validate_document(document: Any, *, dag: bool = False) -> ValidationReport:
 def _validate_root(data: Mapping[str, Any], report: ValidationReport) -> None:
     if "xBRIEFInfo" not in data:
         report.add_error(ISSUE_MISSING_ROOT_FIELD, "xBRIEFInfo", "Missing required root field: xBRIEFInfo")
-        xbrief_info: Mapping[str, Any] | None = None
+        xbrief_info = None
     else:
         raw_info = data.get("xBRIEFInfo")
         if not isinstance(raw_info, Mapping):
@@ -73,11 +79,11 @@ def _validate_root(data: Mapping[str, Any], report: ValidationReport) -> None:
 
     if xbrief_info is not None:
         version = xbrief_info.get("version")
-        if version != "0.7":
+        if version not in VALID_VERSIONS:
             report.add_error(
                 ISSUE_INVALID_VERSION,
                 "xBRIEFInfo.version",
-                f"Expected version '0.7', got {version!r}",
+                f"Expected version in {sorted(VALID_VERSIONS)}, got {version!r}",
             )
 
     if "plan" not in data:
@@ -102,11 +108,12 @@ def _validate_plan(plan: Mapping[str, Any], report: ValidationReport) -> None:
             )
 
     status = plan.get("status")
-    if status is not None and status not in VALID_STATUSES:
+    # Fix (Greptile #2): use VALID_PLAN_STATUSES (excludes "auto") at plan level
+    if status is not None and status not in VALID_PLAN_STATUSES:
         report.add_error(
             ISSUE_INVALID_PLAN_STATUS,
             "plan.status",
-            f"Invalid plan status {status!r}; expected one of {sorted(VALID_STATUSES)}",
+            f"Invalid plan status {status!r}; expected one of {sorted(VALID_PLAN_STATUSES)}",
         )
 
     plan_id = plan.get("id")
@@ -130,6 +137,7 @@ def _validate_plan(plan: Mapping[str, Any], report: ValidationReport) -> None:
         return
 
     _validate_items(items, report, "plan.items", seen_ids=set())
+
 
 def _validate_items(
     items: list[Any],
@@ -171,6 +179,17 @@ def _validate_items(
                 f"Invalid item status {status!r}; expected one of {sorted(VALID_STATUSES)}",
             )
 
+        # Fix (Greptile #3): reject status="auto" on task-type or childless items
+        if status == "auto":
+            item_type = item.get("type")
+            child_items = item.get("items") or item.get("subItems") or item.get("planRefs")
+            if item_type == "task" or not child_items:
+                report.add_error(
+                    ISSUE_AUTO_STATUS_INVALID,
+                    f"{item_path}.status",
+                    'status "auto" is only valid on container items (group/milestone/epic) with children',
+                )
+
         item_id = item.get("id")
         if item_id is not None and (not isinstance(item_id, str) or not HIERARCHICAL_ID_PATTERN.match(item_id)):
             report.add_error(
@@ -188,6 +207,14 @@ def _validate_items(
             else:
                 seen_ids.add(item_id)
 
+        item_type = item.get("type")
+        if item_type is not None and item_type not in VALID_ITEM_TYPES:
+            report.add_error(
+                ISSUE_INVALID_ITEM_TYPE_VALUE,
+                f"{item_path}.type",
+                f"Invalid item type {item_type!r}; expected one of {sorted(VALID_ITEM_TYPES)}",
+            )
+
         plan_ref = item.get("planRef")
         if plan_ref is not None and (not isinstance(plan_ref, str) or not PLAN_REF_PATTERN.match(plan_ref)):
             report.add_error(
@@ -195,6 +222,35 @@ def _validate_items(
                 f"{item_path}.planRef",
                 "planRef must match #..., file://..., or https://...",
             )
+
+        plan_refs = item.get("planRefs")
+        if plan_refs is not None:
+            if not isinstance(plan_refs, list):
+                report.add_error(
+                    ISSUE_INVALID_PLANREFS,
+                    f"{item_path}.planRefs",
+                    "planRefs must be an array",
+                )
+            else:
+                for idx, ref in enumerate(plan_refs):
+                    if not isinstance(ref, str) or not PLAN_REF_PATTERN.match(ref):
+                        report.add_error(
+                            ISSUE_INVALID_PLANREFS,
+                            f"{item_path}.planRefs[{idx}]",
+                            "planRefs entries must match #..., file://..., or https://...",
+                        )
+
+        # Fix (Greptile #1): recurse into both "items" (preferred v0.8) and "subItems" (compat)
+        nested_items = item.get("items")
+        if nested_items is not None:
+            if not isinstance(nested_items, list):
+                report.add_error(
+                    ISSUE_INVALID_SUBITEMS_TYPE,
+                    f"{item_path}.items",
+                    "items must be an array",
+                )
+            else:
+                _validate_items(nested_items, report, f"{item_path}.items", seen_ids=seen_ids)
 
         sub_items = item.get("subItems")
         if sub_items is None:

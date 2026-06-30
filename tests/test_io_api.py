@@ -24,7 +24,7 @@ def test_loads_strict_mode_raises() -> None:
 
 def test_file_io_round_trip(tmp_path) -> None:
     source = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "R", "status": "running", "items": [{"title": "a", "status": "pending"}]},
     }
 
@@ -48,7 +48,7 @@ def test_dumps_with_model_object() -> None:
     from libxbrief import XBriefDocument
 
     model = XBriefDocument.from_dict({
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "M", "status": "draft", "items": []},
     })
 
@@ -59,7 +59,7 @@ def test_dumps_with_model_object() -> None:
 
 def test_dumps_preserve_mode_keeps_insertion_order() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T",
             "status": "running",
@@ -81,7 +81,7 @@ def test_dumps_coerce_to_dict_no_preserve_order_kwarg() -> None:
     class NoKwarg:
         def to_dict(self) -> dict:  # noqa: ANN001
             return {
-                "xBRIEFInfo": {"version": "0.7"},
+                "xBRIEFInfo": {"version": "0.8"},
                 "plan": {"title": "NK", "status": "running", "items": []},
             }
 

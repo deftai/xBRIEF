@@ -6,7 +6,7 @@ from libxbrief.issues import ValidationReport
 
 def test_validate_minimal_document_has_no_errors() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "Daily",
             "status": "running",
@@ -74,7 +74,7 @@ def test_validate_xbrief_info_not_dict_reports_error() -> None:
 
 
 def test_validate_plan_not_dict_reports_error() -> None:
-    doc = {"xBRIEFInfo": {"version": "0.7"}, "plan": "not-a-dict"}
+    doc = {"xBRIEFInfo": {"version": "0.8"}, "plan": "not-a-dict"}
 
     report = validate(doc)
 
@@ -82,7 +82,7 @@ def test_validate_plan_not_dict_reports_error() -> None:
 
 
 def test_validate_plan_missing_required_fields() -> None:
-    doc = {"xBRIEFInfo": {"version": "0.7"}, "plan": {}}
+    doc = {"xBRIEFInfo": {"version": "0.8"}, "plan": {}}
 
     report = validate(doc)
     codes = {i.code for i in report.errors}
@@ -94,7 +94,7 @@ def test_validate_plan_missing_required_fields() -> None:
 
 def test_validate_items_not_list_reports_error() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "T", "status": "running", "items": "not-a-list"},
     }
 
@@ -105,7 +105,7 @@ def test_validate_items_not_list_reports_error() -> None:
 
 def test_validate_item_not_mapping_reports_error() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "T", "status": "running", "items": [42]},
     }
 
@@ -116,7 +116,7 @@ def test_validate_item_not_mapping_reports_error() -> None:
 
 def test_validate_item_missing_status_reports_error() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {"title": "T", "status": "running", "items": [{"title": "x"}]},
     }
 
@@ -128,7 +128,7 @@ def test_validate_item_missing_status_reports_error() -> None:
 
 def test_validate_subitems_not_list_reports_error() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T",
             "status": "running",

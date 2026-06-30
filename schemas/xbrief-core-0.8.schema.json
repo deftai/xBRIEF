@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://xbrief.dev/schemas/xbrief-core.schema.json",
-  "title": "xBRIEF Core Schema",
+  "$id": "https://xbrief.dev/schemas/xbrief-core-0.8.schema.json",
+  "title": "xBRIEF Core Schema v0.8",
   "description": "JSON Schema for xBRIEF core document structure (v0.8). Adds PlanItem type (task/group/milestone/epic), summary, planRefs, extension property namespace (x-<consumer>/), Source/Confidence narrative keys, and reference type registry.",
   "type": "object",
   "required": [

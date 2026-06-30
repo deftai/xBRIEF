@@ -1,4 +1,4 @@
-"""Dataclass object model for xBRIEF v0.5 documents."""
+"""Dataclass object model for xBRIEF v0.8 documents."""
 
 from __future__ import annotations
 
@@ -13,11 +13,15 @@ from libxbrief.serialization.json_codec import dump_json_file, dumps_json, load_
 _PLAN_ITEM_FIELD_ORDER = [
     "id",
     "uid",
+    "type",
+    "summary",
     "title",
     "status",
     "narrative",
+    "items",
     "subItems",
     "planRef",
+    "planRefs",
     "tags",
     "metadata",
     "created",
@@ -76,9 +80,13 @@ class PlanItem:
     status: str = ""
     id: Any = None
     uid: Any = None
+    type: Any = None
+    summary: Any = None
     narrative: Any = None
+    items: list[PlanItem] = field(default_factory=list)
     subItems: list[PlanItem] = field(default_factory=list)
     planRef: Any = None
+    planRefs: Any = None
     tags: Any = None
     metadata: Any = None
     created: Any = None
@@ -141,10 +149,13 @@ class PlanItem:
         item = cls(
             id=data.get("id"),
             uid=data.get("uid"),
+            type=data.get("type"),
+            summary=data.get("summary"),
             title=data.get("title", ""),
             status=data.get("status", ""),
             narrative=data.get("narrative"),
             planRef=data.get("planRef"),
+            planRefs=data.get("planRefs"),
             tags=data.get("tags"),
             metadata=data.get("metadata"),
             created=data.get("created"),
@@ -169,6 +180,14 @@ class PlanItem:
             extras=extras,
             _field_order=list(data.keys()),
         )
+
+        # items and subItems are assigned after construction (not via cls(...)) because
+        # passing them as constructor kwargs would conflict with the dataclass field
+        # default_factory — the factory would run first, then be immediately overwritten.
+        # This matches the subItems pattern below and is intentional.
+        items_field = data.get("items")
+        if isinstance(items_field, list):
+            item.items = [cls.from_dict(x) for x in items_field if isinstance(x, Mapping)]
 
         sub_items = data.get("subItems")
         if isinstance(sub_items, list):
@@ -376,11 +395,17 @@ def _known_item_values(item: PlanItem, *, preserve_order: bool) -> dict[str, Any
     optional_pairs = {
         "id": item.id,
         "uid": item.uid,
+        "type": item.type,
+        "summary": item.summary,
         "narrative": item.narrative,
+        "items": [sub.to_dict(preserve_order=preserve_order) for sub in item.items]
+        if item.items
+        else None,
         "subItems": [sub.to_dict(preserve_order=preserve_order) for sub in item.subItems]
         if item.subItems
         else None,
         "planRef": item.planRef,
+        "planRefs": item.planRefs,
         "tags": item.tags,
         "metadata": item.metadata,
         "created": item.created,

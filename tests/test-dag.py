@@ -22,7 +22,7 @@ from libxbrief import ValidationError, XBriefDocument, validate
 def _doc(plan_extra: dict) -> dict:
     """Build a minimal valid v0.5 document with extra plan fields."""
     return {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "Test",
             "status": "running",
@@ -69,7 +69,7 @@ def test_dag_linear_chain_is_valid() -> None:
 
 def test_dag_diamond_is_valid() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T", "status": "running",
             "items": [
@@ -199,7 +199,7 @@ def test_dag_edge_missing_to_reports_error() -> None:
 def test_dag_collect_ids_skips_non_mapping_items() -> None:
     """Non-Mapping entries in plan.items are skipped by _collect_ids (dag.py:122)."""
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T", "status": "running",
             "items": [42, "bad", None],  # all non-Mapping → skipped
@@ -213,7 +213,7 @@ def test_dag_collect_ids_skips_non_mapping_items() -> None:
 
 def test_dag_subitems_ids_are_valid_edge_targets() -> None:
     doc = {
-        "xBRIEFInfo": {"version": "0.7"},
+        "xBRIEFInfo": {"version": "0.8"},
         "plan": {
             "title": "T", "status": "running",
             "items": [

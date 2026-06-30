@@ -191,7 +191,7 @@ export class PlanBuilder {
       ...this.planOptions,
     });
     return new XBriefDocument({
-      xbriefInfo: { version: "0.7" },
+      xbriefInfo: { version: "0.8" },
       plan,
     });
   }
@@ -254,7 +254,7 @@ export function quickTodo(
 
   const { status = "running", ...planOptions } = options;
   return new XBriefDocument({
-    xbriefInfo: { version: "0.7" },
+    xbriefInfo: { version: "0.8" },
     plan: new Plan({
       title,
       status,
@@ -284,7 +284,7 @@ export function fromItems(
 
   const { status = "running", ...planOptions } = options;
   return new XBriefDocument({
-    xbriefInfo: { version: "0.7" },
+    xbriefInfo: { version: "0.8" },
     plan: new Plan({
       title,
       status,

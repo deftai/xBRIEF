@@ -181,7 +181,7 @@ class PlanBuilder:
             edges=self._edges or None,
             **plan_kwargs,
         )
-        return XBriefDocument(xbrief_info={"version": "0.7"}, plan=plan)
+        return XBriefDocument(xbrief_info={"version": "0.8"}, plan=plan)
 
     def _normalize_edge(self, edge: Any) -> Any:
         if isinstance(edge, tuple | list) and len(edge) == 3:
@@ -223,7 +223,7 @@ def quick_todo(
             raise TypeError("quick_todo items must be strings or PlanItem instances")
 
     return XBriefDocument(
-        xbrief_info={"version": "0.7"},
+        xbrief_info={"version": "0.8"},
         plan=Plan(title=title, status=status, items=plan_items, **kwargs),
     )
 
@@ -242,6 +242,6 @@ def from_items(
             raise TypeError("from_items items must be PlanItem instances")
 
     return XBriefDocument(
-        xbrief_info={"version": "0.7"},
+        xbrief_info={"version": "0.8"},
         plan=Plan(title=title, status=status, items=plan_items, **kwargs),
     )

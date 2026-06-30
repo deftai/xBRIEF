@@ -98,11 +98,11 @@ describe("coverage-oriented negative paths", () => {
 
   test("validation reports invalid plan root type and detailed item failures", () => {
     const invalidPlan = validate({
-      xBRIEFInfo: { version: "0.7" },
+      xBRIEFInfo: { version: "0.8" },
       plan: "bad",
     });
     const invalidItems = validate({
-      xBRIEFInfo: { version: "0.7" },
+      xBRIEFInfo: { version: "0.8" },
       plan: {
         id: "bad:id",
         title: "Plan",
@@ -198,7 +198,7 @@ describe("coverage-oriented negative paths", () => {
       subItems: [{ title: "Child", status: "pending", extra: "x" }],
     });
     const document = XBriefDocumentSchema.parse({
-      xBRIEFInfo: { version: "0.7", profile: "custom" },
+      xBRIEFInfo: { version: "0.8", profile: "custom" },
       plan: {
         title: "Plan",
         status: "draft",
@@ -215,7 +215,7 @@ describe("coverage-oriented negative paths", () => {
 
   test("model helpers cover lenient parsing and JSON methods", () => {
     const document = XBriefDocument.fromDict({
-      xBRIEFInfo: { version: "0.7" },
+      xBRIEFInfo: { version: "0.8" },
       plan: {
         title: "Plan",
         status: "draft",

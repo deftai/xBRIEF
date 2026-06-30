@@ -21,7 +21,7 @@ describe("io", () => {
     const input = {
       zeta: 1,
       alpha: 2,
-      xBRIEFInfo: { version: "0.7" },
+      xBRIEFInfo: { version: "0.8" },
       plan: { title: "Plan", status: "draft", items: [] },
     };
 

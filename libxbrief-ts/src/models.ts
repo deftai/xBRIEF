@@ -16,9 +16,13 @@ export interface PlanItemInit extends Record<string, unknown> {
   status?: string;
   id?: unknown;
   uid?: unknown;
+  type?: unknown;
+  summary?: unknown;
   narrative?: unknown;
+  items?: PlanItem[];
   subItems?: PlanItem[];
   planRef?: unknown;
+  planRefs?: unknown;
   tags?: unknown;
   metadata?: unknown;
   created?: unknown;
@@ -99,9 +103,13 @@ export class PlanItem {
   public status: string;
   public id: OptionalUnknown;
   public uid: OptionalUnknown;
+  public type: OptionalUnknown;
+  public summary: OptionalUnknown;
   public narrative: OptionalUnknown;
+  public items: PlanItem[];
   public subItems: PlanItem[];
   public planRef: OptionalUnknown;
+  public planRefs: OptionalUnknown;
   public tags: OptionalUnknown;
   public metadata: OptionalUnknown;
   public created: OptionalUnknown;
@@ -131,9 +139,13 @@ export class PlanItem {
     this.status = typeof init.status === "string" ? init.status : "";
     this.id = init.id;
     this.uid = init.uid;
+    this.type = init.type;
+    this.summary = init.summary;
     this.narrative = init.narrative;
+    this.items = Array.isArray(init.items) ? [...init.items] : [];
     this.subItems = Array.isArray(init.subItems) ? [...init.subItems] : [];
     this.planRef = init.planRef;
+    this.planRefs = init.planRefs;
     this.tags = init.tags;
     this.metadata = init.metadata;
     this.created = init.created;
@@ -189,10 +201,13 @@ export class PlanItem {
     const item = new PlanItem({
       id: mapping.id,
       uid: mapping.uid,
+      type: mapping.type,
+      summary: mapping.summary,
       title: typeof mapping.title === "string" ? mapping.title : "",
       status: typeof mapping.status === "string" ? mapping.status : "",
       narrative: mapping.narrative,
       planRef: mapping.planRef,
+      planRefs: mapping.planRefs,
       tags: mapping.tags,
       metadata: mapping.metadata,
       created: mapping.created,
@@ -217,6 +232,12 @@ export class PlanItem {
       extras,
       _fieldOrder: Object.keys(mapping),
     });
+
+    // items and subItems assigned post-construction to avoid default_factory conflict
+    const nestedItems = mapping.items;
+    if (Array.isArray(nestedItems)) {
+      item.items = nestedItems.filter(isRecordLike).map((entry) => PlanItem.fromDict(entry));
+    }
 
     const subItems = mapping.subItems;
     if (Array.isArray(subItems)) {
@@ -402,12 +423,19 @@ function knownItemValues(item: PlanItem, preserveOrder: boolean): Record<string,
   const optionalPairs: Record<string, unknown> = {
     id: item.id,
     uid: item.uid,
+    type: item.type,
+    summary: item.summary,
     narrative: item.narrative,
+    items:
+      item.items.length > 0
+        ? item.items.map((child) => child.toDict({ preserveOrder }))
+        : undefined,
     subItems:
       item.subItems.length > 0
         ? item.subItems.map((subItem) => subItem.toDict({ preserveOrder }))
         : undefined,
     planRef: item.planRef,
+    planRefs: item.planRefs,
     tags: item.tags,
     metadata: item.metadata,
     created: item.created,

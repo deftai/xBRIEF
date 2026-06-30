@@ -32,7 +32,7 @@ describe("cross-language compatibility", () => {
     const output = runPython(script);
 
     const document = loads(output, { strict: true });
-    expect(document.xBRIEFInfo).toEqual({ version: "0.7" });
+    expect(document.xBRIEFInfo).toEqual({ version: "0.8" });
     expect((document.plan as { items: unknown[] }).items).toHaveLength(2);
   });
 
@@ -47,6 +47,6 @@ describe("cross-language compatibility", () => {
 
     const output = runPython(script, text);
 
-    expect(JSON.parse(output)).toEqual({ version: "0.7", count: 2 });
+    expect(JSON.parse(output)).toEqual({ version: "0.8", count: 2 });
   });
 });

@@ -14,9 +14,13 @@ export interface PlanItemData {
   status: string;
   id?: unknown;
   uid?: unknown;
+  type?: unknown;
+  summary?: unknown;
   narrative?: unknown;
+  items?: PlanItemData[];
   subItems?: PlanItemData[];
   planRef?: unknown;
+  planRefs?: unknown;
   tags?: unknown;
   metadata?: unknown;
   created?: unknown;
@@ -94,11 +98,15 @@ export const PlanItemSchema: z.ZodType<PlanItemData> = z.lazy(() =>
     .object({
       id: AnyValueSchema.optional(),
       uid: AnyValueSchema.optional(),
+      type: AnyValueSchema.optional(),
+      summary: AnyValueSchema.optional(),
       title: z.string(),
       status: z.string(),
       narrative: AnyValueSchema.optional(),
+      items: z.array(PlanItemSchema).optional(),
       subItems: z.array(PlanItemSchema).optional(),
       planRef: AnyValueSchema.optional(),
+      planRefs: AnyValueSchema.optional(),
       tags: AnyValueSchema.optional(),
       metadata: AnyValueSchema.optional(),
       created: AnyValueSchema.optional(),
