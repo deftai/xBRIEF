@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-xBRIEF v0.8 Document Validator
+xBRIEF Document Validator
 
-Validates complete xBRIEF documents against:
+Validates complete xBRIEF documents against the current version for:
 1. JSON Schema (structural validation)
 2. DAG constraints (cycle detection, reference validation)
 3. Conformance criteria from specification
-"""
+""" 
 
 import json
 import sys
@@ -15,10 +15,18 @@ from typing import Dict, List, Tuple
 import re
 
 try:
-    from libxbrief.compat.policy import VALID_STATUSES as _POLICY_VALID_STATUSES
+    from libxbrief.compat.policy import (
+        CURRENT_VERSION as _POLICY_CURRENT_VERSION,
+        VALID_STATUSES as _POLICY_VALID_STATUSES,
+    )
+    _IMPORTED_CURRENT_VERSION = _POLICY_CURRENT_VERSION
     _IMPORTED_VALID_STATUSES = _POLICY_VALID_STATUSES
 except ImportError:
+    _IMPORTED_CURRENT_VERSION = None
     _IMPORTED_VALID_STATUSES = None
+
+# Single source of truth for the version this validator enforces.
+CURRENT_VERSION: str = _IMPORTED_CURRENT_VERSION or "0.8"
 
 try:
     import jsonschema
@@ -30,11 +38,11 @@ except ImportError:
 
 # Import DAG validator
 sys.path.insert(0, str(Path(__file__).parent))
-from dag_validator import validate_plan_dag
+from dag_validator import validate_plan_dag  # noqa: E402
 
 
 class ConformanceValidator:
-    """Validates xBRIEF v0.8 conformance criteria."""
+    """Validates xBRIEF conformance criteria for the current version."""
 
     # Import shared set from policy; fall back to inline definition if libxbrief not installed.
     VALID_STATUSES = _IMPORTED_VALID_STATUSES or {
@@ -68,15 +76,15 @@ class ConformanceValidator:
         return (len(self.errors) == 0, self.errors, self.warnings)
     
     def _check_version(self):
-        """Conformance #1: Contains xBRIEFInfo with version: '0.8'"""
+        """Conformance #1: Contains xBRIEFInfo with the current version."""
         xbrief_info = self.doc.get("xBRIEFInfo")
         if not xbrief_info:
             self.errors.append("Missing required field: xBRIEFInfo")
             return
 
         version = xbrief_info.get("version")
-        if version != "0.8":
-            self.errors.append(f"Invalid version: expected '0.8', got '{version}'")
+        if version != CURRENT_VERSION:
+            self.errors.append(f"Invalid version: expected '{CURRENT_VERSION}', got '{version}'")
     
     def _check_plan_required_fields(self):
         """Conformance #2-3: Contains exactly one plan with required fields"""
@@ -86,11 +94,11 @@ class ConformanceValidator:
         
         plan = self.doc["plan"]
         
-        # Check for removed container types (not valid in v0.8+)
+        # Check for removed container types
         if "todoList" in self.doc:
-            self.errors.append("TodoList container is not supported. Use Plan instead.")
+            self.errors.append("TodoList container is not part of the Plan model. Use Plan instead.")
         if "playbook" in self.doc:
-            self.errors.append("Playbook container is not supported. Use Plan with narratives instead.")
+            self.errors.append("Playbook container is not part of the Plan model. Use Plan with narratives instead.")
         
         # Required fields
         if "title" not in plan:
@@ -271,12 +279,13 @@ def validate_document(file_path: str, schema_path: str = None) -> int:
     else:
         print("○ No edges to validate (DAG validation skipped)")
     
+    _ver = CURRENT_VERSION
     print()
     if all_valid:
-        print("✓ Document is xBRIEF v0.8 conformant")
+        print(f"\u2713 Document is xBRIEF v{_ver} conformant")
         return 0
     else:
-        print("✗ Document is NOT xBRIEF v0.8 conformant")
+        print(f"\u2717 Document is NOT xBRIEF v{_ver} conformant")
         return 1
 
 
