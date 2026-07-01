@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-xBRIEF v0.7 Document Validator
+xBRIEF v0.8 Document Validator
 
 Validates complete xBRIEF documents against:
 1. JSON Schema (structural validation)
@@ -86,11 +86,11 @@ class ConformanceValidator:
         
         plan = self.doc["plan"]
         
-        # Check for removed container types
+        # Check for removed container types (not valid in v0.8+)
         if "todoList" in self.doc:
-            self.errors.append("TodoList container is removed in v0.7. Use Plan instead.")
+            self.errors.append("TodoList container is not supported. Use Plan instead.")
         if "playbook" in self.doc:
-            self.errors.append("Playbook container is removed in v0.7. Use Plan with narratives instead.")
+            self.errors.append("Playbook container is not supported. Use Plan with narratives instead.")
         
         # Required fields
         if "title" not in plan:
@@ -152,10 +152,11 @@ class ConformanceValidator:
                 path_str = ".".join(item_path)
                 self.errors.append(f"Invalid ID format at {path_str}: '{item_id}'. Must match pattern: [a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)*")
             
-            # Check nested items
-            sub_items = item.get("subItems", [])
-            if sub_items:
-                self._check_item_ids(sub_items, item_path + ["subItems"])
+            # Check nested items (v0.8 preferred "items" and legacy "subItems")
+            for nested_field in ("items", "subItems"):
+                nested = item.get(nested_field, [])
+                if nested:
+                    self._check_item_ids(nested, item_path + [nested_field])
     
     def _check_uri_syntax(self):
         """Conformance #9: planRef URIs follow syntax"""
@@ -172,10 +173,11 @@ class ConformanceValidator:
                 path_str = ".".join(item_path)
                 self.errors.append(f"Invalid planRef URI at {path_str}: '{plan_ref}'. Must match: #item-id, file://..., or https://...")
             
-            # Check nested items
-            sub_items = item.get("subItems", [])
-            if sub_items:
-                self._check_item_uris(sub_items, item_path + ["subItems"])
+            # Check nested items (v0.8 preferred "items" and legacy "subItems")
+            for nested_field in ("items", "subItems"):
+                nested = item.get(nested_field, [])
+                if nested:
+                    self._check_item_uris(nested, item_path + [nested_field])
     
     def _check_narrative_keys(self):
         """Conformance #10: Narrative keys SHOULD use TitleCase"""
@@ -271,10 +273,10 @@ def validate_document(file_path: str, schema_path: str = None) -> int:
     
     print()
     if all_valid:
-        print("✓ Document is xBRIEF v0.7 conformant")
+        print("✓ Document is xBRIEF v0.8 conformant")
         return 0
     else:
-        print("✗ Document is NOT xBRIEF v0.7 conformant")
+        print("✗ Document is NOT xBRIEF v0.8 conformant")
         return 1
 
 

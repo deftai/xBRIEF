@@ -20,7 +20,7 @@ from libxbrief import ValidationError, XBriefDocument, validate
 # ---------------------------------------------------------------------------
 
 def _doc(plan_extra: dict) -> dict:
-    """Build a minimal valid v0.5 document with extra plan fields."""
+    """Build a minimal valid v0.8 document with extra plan fields."""
     return {
         "xBRIEFInfo": {"version": "0.8"},
         "plan": {
