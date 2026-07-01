@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-xBRIEF v0.7 Document Validator
+xBRIEF v0.8 Document Validator
 
 Validates complete xBRIEF documents against:
 1. JSON Schema (structural validation)
@@ -15,9 +15,14 @@ from typing import Dict, List, Tuple
 import re
 
 try:
-    from libxbrief.compat.policy import VALID_STATUSES as _POLICY_VALID_STATUSES
+    from libxbrief.compat.policy import (
+        CURRENT_VERSION as _POLICY_CURRENT_VERSION,
+        VALID_STATUSES as _POLICY_VALID_STATUSES,
+    )
+    _IMPORTED_CURRENT_VERSION = _POLICY_CURRENT_VERSION
     _IMPORTED_VALID_STATUSES = _POLICY_VALID_STATUSES
 except ImportError:
+    _IMPORTED_CURRENT_VERSION = None
     _IMPORTED_VALID_STATUSES = None
 
 try:
@@ -88,9 +93,9 @@ class ConformanceValidator:
         
         # Check for removed container types
         if "todoList" in self.doc:
-            self.errors.append("TodoList container is removed in v0.7. Use Plan instead.")
+            self.errors.append("TodoList container is not part of the Plan model. Use Plan instead.")
         if "playbook" in self.doc:
-            self.errors.append("Playbook container is removed in v0.7. Use Plan with narratives instead.")
+            self.errors.append("Playbook container is not part of the Plan model. Use Plan with narratives instead.")
         
         # Required fields
         if "title" not in plan:
@@ -269,12 +274,13 @@ def validate_document(file_path: str, schema_path: str = None) -> int:
     else:
         print("○ No edges to validate (DAG validation skipped)")
     
+    _ver = _IMPORTED_CURRENT_VERSION or "0.8"
     print()
     if all_valid:
-        print("✓ Document is xBRIEF v0.7 conformant")
+        print(f"\u2713 Document is xBRIEF v{_ver} conformant")
         return 0
     else:
-        print("✗ Document is NOT xBRIEF v0.7 conformant")
+        print(f"\u2717 Document is NOT xBRIEF v{_ver} conformant")
         return 1
 
 
